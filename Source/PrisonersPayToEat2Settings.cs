@@ -23,6 +23,11 @@ namespace PrisonersPayToEat2
         public float defaultWagePerHour = 2f;
         public Dictionary<string, float> workTypeWages = new Dictionary<string, float>();
 
+        // Piece-rate ("按量计费"): master switch + per-work-type flag + per-unit wage.
+        public bool enablePieceRate = false;
+        public List<string> pieceRateWorkTypes = new List<string>();               // flagged as piece-rate
+        public Dictionary<string, float> workTypePieceWages = new Dictionary<string, float>();
+
         // Per-foodDef custom price override (absolute ticket cost per eaten unit; supports decimals).
         public Dictionary<string, float> customFoodPrices = new Dictionary<string, float>();
 
@@ -40,6 +45,11 @@ namespace PrisonersPayToEat2
             Scribe_Values.Look(ref customTicketName, "customTicketName", "");
             Scribe_Collections.Look(ref workTypeWages, "workTypeWages", LookMode.Value, LookMode.Value);
             if (workTypeWages == null) workTypeWages = new Dictionary<string, float>();
+            Scribe_Values.Look(ref enablePieceRate, "enablePieceRate", false);
+            Scribe_Collections.Look(ref pieceRateWorkTypes, "pieceRateWorkTypes", LookMode.Value);
+            if (pieceRateWorkTypes == null) pieceRateWorkTypes = new List<string>();
+            Scribe_Collections.Look(ref workTypePieceWages, "workTypePieceWages", LookMode.Value, LookMode.Value);
+            if (workTypePieceWages == null) workTypePieceWages = new Dictionary<string, float>();
             Scribe_Collections.Look(ref customFoodPrices, "customFoodPrices", LookMode.Value, LookMode.Value);
             if (customFoodPrices == null) customFoodPrices = new Dictionary<string, float>();
         }
@@ -174,51 +184,96 @@ namespace PrisonersPayToEat2
 
         private void DrawWorkTypeWagesTab(Rect rect)
         {
-            // toolbar
+            // toolbar: master switch + bulk actions
             float toolY = rect.y + 2f;
-            GUI.color = new Color(0.7f, 0.7f, 0.65f);
-            Widgets.Label(new Rect(rect.x, toolY + 2f, rect.width - 330f, 24f),
-                "PPTE2_WorkTypeWagesHint".Translate());
-            GUI.color = Color.white;
+            Widgets.Label(new Rect(rect.x, toolY + 2f, 150f, 24f), "PPTE2_EnablePieceRate".Translate());
+            Widgets.Checkbox(new Vector2(rect.x + 156f, toolY), ref enablePieceRate);
             if (Widgets.ButtonText(new Rect(rect.xMax - 320f, toolY, 155f, 26f), "PPTE2_ResetWorkTypeWages".Translate()))
+            {
                 workTypeWages.Clear();
+                workTypePieceWages.Clear();
+                pieceRateWorkTypes.Clear();
+            }
             if (Widgets.ButtonText(new Rect(rect.xMax - 155f, toolY, 155f, 26f), "PPTE2_FillWorkTypeWages".Translate()))
             {
                 EnsureWorkTypesCached();
                 foreach (var wt in _cachedWorkTypes) workTypeWages[wt.defName] = defaultWagePerHour;
             }
 
-            // scrollable list filling the whole remaining tab area
-            var listRect = new Rect(rect.x, toolY + 34f, rect.width, rect.yMax - toolY - 34f);
+            // wrapped hint below the toolbar
+            GUI.color = new Color(0.7f, 0.7f, 0.65f);
+            Widgets.Label(new Rect(rect.x, toolY + 30f, rect.width, 40f), "PPTE2_WorkTypeWagesHint".Translate());
+            GUI.color = Color.white;
+
+            // scrollable list filling the rest of the tab
+            var listRect = new Rect(rect.x, toolY + 74f, rect.width, rect.yMax - toolY - 74f);
             EnsureWorkTypesCached();
-            const float rowH = 26f;
-            var view = new Rect(0f, 0f, listRect.width - 20f, 6f + _cachedWorkTypes.Count * rowH);
+            const float rowH = 28f;
+            var view = new Rect(0f, 0f, listRect.width - 20f, 30f + _cachedWorkTypes.Count * rowH);
             Widgets.BeginScrollView(listRect, ref _workWageScroll, view);
 
-            float y = 3f;
-            const float labelW = 220f;
-            const float inputW = 100f;
-            float descW = view.width - labelW - inputW - 24f;
+            // column headers
+            const float labelW = 180f;
+            const float modeW = 100f;
+            const float inputW = 80f;
+            float hourlyX = 2f + labelW + 6f + modeW;
+            float pieceX = view.width - inputW - 2f;
+            GUI.color = new Color(0.8f, 0.8f, 0.65f);
+            Widgets.Label(new Rect(2f, 4f, labelW, 20f), "PPTE2_HdrWorkType".Translate());
+            Widgets.Label(new Rect(2f + labelW + 6f, 4f, modeW, 20f), "PPTE2_HdrMode".Translate());
+            Widgets.Label(new Rect(hourlyX, 4f, inputW, 20f), "PPTE2_HdrHourlyWage".Translate());
+            Widgets.Label(new Rect(pieceX, 4f, inputW, 20f), "PPTE2_HdrPieceWage".Translate());
+            GUI.color = Color.white;
+            Widgets.DrawLineHorizontal(0f, 26f, view.width);
 
+            float y = 32f;
+            Color gold = new Color(1f, 0.85f, 0.45f);
             foreach (var wt in _cachedWorkTypes)
             {
-                bool has = workTypeWages.TryGetValue(wt.defName, out float cur);
-                string buf = has ? cur.ToString("0.0") : "";
+                bool piece = pieceRateWorkTypes.Contains(wt.defName);
 
+                // label
                 Widgets.Label(new Rect(2f, y + 2f, labelW, 22f), wt.labelShort ?? wt.defName);
-                if (!string.IsNullOrEmpty(wt.description))
-                {
-                    GUI.color = new Color(0.7f, 0.7f, 0.65f);
-                    Widgets.Label(new Rect(2f + labelW + 4f, y + 2f, descW, 22f), wt.description.Truncate(descW));
-                    GUI.color = Color.white;
-                }
 
-                string newBuf = Widgets.TextField(new Rect(view.width - inputW - 2f, y, inputW, 22f), buf);
-                if (newBuf != buf)
+                // mode toggle: [按时] [按量]
+                float mx = 2f + labelW + 6f;
+                float btnW = (modeW - 4f) / 2f;
+                GUI.color = piece ? Color.white : gold;
+                if (Widgets.ButtonText(new Rect(mx, y, btnW, 22f), "PPTE2_ModePerHour".Translate()))
+                    pieceRateWorkTypes.Remove(wt.defName);
+                GUI.color = piece ? gold : Color.white;
+                if (Widgets.ButtonText(new Rect(mx + btnW + 4f, y, btnW, 22f), "PPTE2_ModePerItem".Translate()))
                 {
-                    if (float.TryParse(newBuf, out float res) && res >= 0f) workTypeWages[wt.defName] = res;
+                    if (!pieceRateWorkTypes.Contains(wt.defName))
+                    {
+                        pieceRateWorkTypes.Add(wt.defName);
+                        // prefill a sane per-unit wage the first time it is enabled
+                        if (!workTypePieceWages.ContainsKey(wt.defName))
+                            workTypePieceWages[wt.defName] = PieceRateWorker.GetPrefilledPieceWage(wt, GetWageForWorkType(wt.defName));
+                    }
+                }
+                GUI.color = Color.white;
+
+                // hourly wage input
+                bool hasH = workTypeWages.TryGetValue(wt.defName, out float curH);
+                string bufH = hasH ? curH.ToString("0.0") : "";
+                string newBufH = Widgets.TextField(new Rect(hourlyX, y, inputW, 22f), bufH);
+                if (newBufH != bufH)
+                {
+                    if (float.TryParse(newBufH, out float res) && res >= 0f) workTypeWages[wt.defName] = res;
                     else workTypeWages.Remove(wt.defName);
                 }
+
+                // piece-rate unit wage input
+                bool hasP = workTypePieceWages.TryGetValue(wt.defName, out float curP);
+                string bufP = hasP ? curP.ToString("0.##") : "";
+                string newBufP = Widgets.TextField(new Rect(pieceX, y, inputW, 22f), bufP);
+                if (newBufP != bufP)
+                {
+                    if (float.TryParse(newBufP, out float res) && res >= 0f) workTypePieceWages[wt.defName] = res;
+                    else workTypePieceWages.Remove(wt.defName);
+                }
+
                 y += rowH;
             }
 

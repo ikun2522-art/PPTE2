@@ -13,6 +13,7 @@ namespace PrisonersPayToEat2
         public float ticketBalance;
         public float foodMultiplier = 1.0f;   // overrides global food price multiplier
         public float wageMultiplier = 1.0f;   // overrides global wage multiplier
+        public PieceRateMode wageMode = PieceRateMode.Follow; // per-prisoner hourly/piece-rate override
         public bool organHarvestOverride;     // explicit per-prisoner override of the global toggle
         public bool organHarvestOverrideEnabled;
         public bool kidneyTaken;
@@ -23,6 +24,7 @@ namespace PrisonersPayToEat2
             Scribe_Values.Look(ref ticketBalance, "ticketBalance", 0f);
             Scribe_Values.Look(ref foodMultiplier, "foodMultiplier", 1.0f);
             Scribe_Values.Look(ref wageMultiplier, "wageMultiplier", 1.0f);
+            Scribe_Values.Look(ref wageMode, "wageMode", PieceRateMode.Follow);
             Scribe_Values.Look(ref organHarvestOverride, "organHarvestOverride", false);
             Scribe_Values.Look(ref organHarvestOverrideEnabled, "organHarvestOverrideEnabled", false);
             Scribe_Values.Look(ref kidneyTaken, "kidneyTaken", false);
@@ -42,6 +44,12 @@ namespace PrisonersPayToEat2
         // We credit tickets continuously as work ticks accumulate (see PrisonLaborWageTicker),
         // so a prisoner never misses pay just because the hourly snapshot happened mid-lunch.
         private Dictionary<int, float> workWageAccum = new Dictionary<int, float>();
+
+        // Transient (not serialized) research contribution tracking for piece-rate billing:
+        // project -> contributing pawn -> research speed * ticks. Cleared on load and when a
+        // project completes (see PieceRateWorker.DistributeResearch).
+        public Dictionary<ResearchProjectDef, Dictionary<Pawn, float>> researchContrib =
+            new Dictionary<ResearchProjectDef, Dictionary<Pawn, float>>();
 
         public PrisonersPayToEat2Manager() { }
         public PrisonersPayToEat2Manager(Game game) { }
@@ -125,6 +133,9 @@ namespace PrisonersPayToEat2
             if (data == null) data = new Dictionary<int, PrisonerTicketData>();
             Scribe_Collections.Look(ref workWageAccum, "workWageAccum", LookMode.Value, LookMode.Value);
             if (workWageAccum == null) workWageAccum = new Dictionary<int, float>();
+            // research contributions are transient; drop stale refs on load
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                researchContrib.Clear();
         }
 
         public override void GameComponentTick()

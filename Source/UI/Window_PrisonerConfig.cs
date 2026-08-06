@@ -46,6 +46,24 @@ namespace PrisonersPayToEat2
             list.Label("PPTE2_WageMulLabel".Translate(_data.wageMultiplier.ToString("0.00")));
             _data.wageMultiplier = list.Slider(_data.wageMultiplier, 0.1f, 10f);
 
+            list.Gap(10f);
+            list.Label("PPTE2_WageModeLabel".Translate());
+            float buttonW = (inRect.width - 8f) / 3f;
+            float by = list.CurHeight;
+            Color gold = new Color(1f, 0.85f, 0.45f);
+            for (int i = 0; i < 3; i++)
+            {
+                var mode = (PieceRateMode)i;
+                string label = mode == PieceRateMode.Follow ? "PPTE2_WageModeFollow".Translate()
+                    : mode == PieceRateMode.PerHour ? "PPTE2_ModePerHour".Translate()
+                    : "PPTE2_ModePerItem".Translate();
+                var r = new Rect(inRect.x + i * buttonW, by, buttonW - 4f, 26f);
+                if (_data.wageMode == mode) GUI.color = gold;
+                if (Widgets.ButtonText(r, label)) _data.wageMode = mode;
+                GUI.color = Color.white;
+            }
+            list.Gap(34f);
+
             list.Gap(12f);
             bool overrideOn = _data.organHarvestOverrideEnabled;
             list.CheckboxLabeled("PPTE2_OverrideOrganHarvest".Translate(), ref overrideOn);
@@ -69,6 +87,7 @@ namespace PrisonersPayToEat2
             {
                 _data.foodMultiplier = 1.0f;
                 _data.wageMultiplier = 1.0f;
+                _data.wageMode = PieceRateMode.Follow;
                 _data.organHarvestOverrideEnabled = false;
                 _data.organHarvestOverride = false;
             }

@@ -88,20 +88,31 @@ namespace PrisonersPayToEat2
 
                     if (workingNow)
                     {
-                        string workTypeDefName = PrisonLaborBridge.CurrentWorkTypeDef(pawn)?.defName;
-                        float wagePerHour = settings.GetWageForWorkType(workTypeDefName);
-                        float perCheck = wagePerHour * settings.wageMultiplier * mgr.EffectiveWageMultiplier(pawn)
-                                         * CheckStride / TicksPerHour;
-
-                        float accum = mgr.GetWorkWageAccum(id) + perCheck;
-                        if (accum >= 0.01f) // fractional tickets: credit as soon as we have any
+                        var wt = PrisonLaborBridge.CurrentWorkTypeDef(pawn);
+                        if (wt != null && PieceRateWorker.IsPieceRateActive(pawn, wt))
                         {
-                            mgr.AddTickets(pawn, accum);
-                            if (settings.logVerbose)
-                                Log.Message($"[PPTE2] {pawn.LabelShortCap} earned {accum:0.##} tickets for working {workTypeDefName ?? "??"}. Balance={mgr.Balance(pawn):0.##}");
-                            accum = 0f;
+                            // piece-rate mode: no hourly accrual (settlement happens on the output
+                            // hooks); for research we only track contribution and pay on completion
+                            if (wt.defName == "Research")
+                                PieceRateWorker.RecordResearchContribution(pawn, CheckStride);
                         }
-                        mgr.SetWorkWageAccum(id, accum);
+                        else
+                        {
+                            string workTypeDefName = wt?.defName;
+                            float wagePerHour = settings.GetWageForWorkType(workTypeDefName);
+                            float perCheck = wagePerHour * settings.wageMultiplier * mgr.EffectiveWageMultiplier(pawn)
+                                             * CheckStride / TicksPerHour;
+
+                            float accum = mgr.GetWorkWageAccum(id) + perCheck;
+                            if (accum >= 0.01f) // fractional tickets: credit as soon as we have any
+                            {
+                                mgr.AddTickets(pawn, accum);
+                                if (settings.logVerbose)
+                                    Log.Message($"[PPTE2] {pawn.LabelShortCap} earned {accum:0.##} tickets for working {workTypeDefName ?? "??"}. Balance={mgr.Balance(pawn):0.##}");
+                                accum = 0f;
+                            }
+                            mgr.SetWorkWageAccum(id, accum);
+                        }
                         wasWorking[id] = true;
                     }
                     else if (wasWorking.ContainsKey(id) && wasWorking[id])

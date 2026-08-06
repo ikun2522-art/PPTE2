@@ -19,9 +19,18 @@
   <PPTE2_WageMul>全局工资倍率：{0}</PPTE2_WageMul>
   <PPTE2_DefaultWagePerHour>默认每小时饭票：{0}</PPTE2_DefaultWagePerHour>
   <PPTE2_SectionWorkTypeWages>按工种设置每小时饭票</PPTE2_SectionWorkTypeWages>
-  <PPTE2_WorkTypeWagesHint>留空使用默认每小时饭票。工种是否允许由 Prison Labor 控制。</PPTE2_WorkTypeWagesHint>
+  <PPTE2_WorkTypeWagesHint>留空使用默认值。工种是否允许由 Prison Labor 控制。按量按完成量计费：生产台按批次、采矿按矿脉、建造按建筑、种植/砍伐/播种按株、搬运按次、清洁按块、研究按科技（多人按贡献分），其他工种（含其他 MOD 新增）按完成一次工作计费。</PPTE2_WorkTypeWagesHint>
   <PPTE2_ResetWorkTypeWages>重置全部</PPTE2_ResetWorkTypeWages>
   <PPTE2_FillWorkTypeWages>填充默认</PPTE2_FillWorkTypeWages>
+  <PPTE2_EnablePieceRate>启用按量计费</PPTE2_EnablePieceRate>
+  <PPTE2_HdrWorkType>工种</PPTE2_HdrWorkType>
+  <PPTE2_HdrMode>计费方式</PPTE2_HdrMode>
+  <PPTE2_HdrHourlyWage>按时工资</PPTE2_HdrHourlyWage>
+  <PPTE2_HdrPieceWage>按量单价</PPTE2_HdrPieceWage>
+  <PPTE2_ModePerHour>按时</PPTE2_ModePerHour>
+  <PPTE2_ModePerItem>按量</PPTE2_ModePerItem>
+  <PPTE2_WageModeLabel>工资计费方式：</PPTE2_WageModeLabel>
+  <PPTE2_WageModeFollow>跟随全局</PPTE2_WageModeFollow>
   <PPTE2_SilverRate>每银币价值可换饭票数：{0}</PPTE2_SilverRate>
   <PPTE2_StartingTickets>新囚犯初始饭票数：{0}</PPTE2_StartingTickets>
   <PPTE2_IgnoreRiot>精神崩溃 / 越狱期间跳过饭票检查</PPTE2_IgnoreRiot>

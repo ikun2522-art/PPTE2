@@ -62,10 +62,12 @@
     <Compile Include="MarketPriceHelper.cs" />
     <Compile Include="PPTEName.cs" />
     <Compile Include="OrganHarvestHelper.cs" />
+    <Compile Include="PieceRateWorker.cs" />
     <Compile Include="RecipeWorker_OrganSale.cs" />
     <Compile Include="Patches\Harmony_Ingest.cs" />
     <Compile Include="Patches\Harmony_UI.cs" />
     <Compile Include="Patches\Harmony_PrisonLabor.cs" />
+    <Compile Include="Patches\Harmony_PieceRate.cs" />
     <Compile Include="UI\Window_PrisonerConfig.cs" />
     <Compile Include="UI\Dialog_GiveTickets.cs" />
     <Compile Include="UI\Gizmo_TicketBalance.cs" />

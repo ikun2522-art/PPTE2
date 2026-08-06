@@ -19,9 +19,18 @@
   <PPTE2_WageMul>Global wage multiplier: {0}</PPTE2_WageMul>
   <PPTE2_DefaultWagePerHour>Default tickets per hour: {0}</PPTE2_DefaultWagePerHour>
   <PPTE2_SectionWorkTypeWages>Per work-type tickets per hour</PPTE2_SectionWorkTypeWages>
-  <PPTE2_WorkTypeWagesHint>Leave blank to use the default rate. Which work types a prisoner may do is decided by Prison Labor.</PPTE2_WorkTypeWagesHint>
+  <PPTE2_WorkTypeWagesHint>Leave blank to use the default rate. Which work types a prisoner may do is decided by Prison Labor. Piece rate pays per completed output: production per recipe batch, mining per vein, construction per building, growing/cutting per plant, hauling per haul, cleaning per filth, research per tech (split by contribution); other work types (including those added by other MODs) pay per completed job.</PPTE2_WorkTypeWagesHint>
   <PPTE2_ResetWorkTypeWages>Reset all</PPTE2_ResetWorkTypeWages>
   <PPTE2_FillWorkTypeWages>Fill defaults</PPTE2_FillWorkTypeWages>
+  <PPTE2_EnablePieceRate>Enable piece-rate billing</PPTE2_EnablePieceRate>
+  <PPTE2_HdrWorkType>Work type</PPTE2_HdrWorkType>
+  <PPTE2_HdrMode>Billing</PPTE2_HdrMode>
+  <PPTE2_HdrHourlyWage>Per hour</PPTE2_HdrHourlyWage>
+  <PPTE2_HdrPieceWage>Per unit</PPTE2_HdrPieceWage>
+  <PPTE2_ModePerHour>Per hour</PPTE2_ModePerHour>
+  <PPTE2_ModePerItem>Per unit</PPTE2_ModePerItem>
+  <PPTE2_WageModeLabel>Wage billing:</PPTE2_WageModeLabel>
+  <PPTE2_WageModeFollow>Follow global</PPTE2_WageModeFollow>
   <PPTE2_SilverRate>Tickets per silver of value: {0}</PPTE2_SilverRate>
   <PPTE2_StartingTickets>Starting tickets per prisoner: {0}</PPTE2_StartingTickets>
   <PPTE2_IgnoreRiot>Ignore ticket check during mental break / prison break</PPTE2_IgnoreRiot>
