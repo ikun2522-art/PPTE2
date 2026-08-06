@@ -1,0 +1,21 @@
+# Build artifacts
+Source/bin/
+Source/obj/
+*.user
+*.suo
+*.pdb
+
+# Local machine path config (contains personal file paths — never commit)
+Source/Directory.Build.props
+
+# Local AI development notes (never commit)
+AI_DEV_NOTES.md
+
+# OS junk
+Thumbs.db
+Desktop.ini
+
+# IDE
+.vs/
+.idea/
+*.vscode/

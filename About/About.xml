@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>囚犯付费吃饭2（Prisoners Pay To Eat 2）</name>
+  <author>AAA不玩抽象</author>
+  <packageId>AAA.PrisonersPayToEat2</packageId>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <description><![CDATA[
+<size=24><b>囚犯付费吃饭2（Prisoners Pay To Eat 2）</b></size>
+
+<size=18><b>核心玩法</b></size>
+你的囚犯再也不能白嫖殖民地的食物了！每一位囚犯进食都必须支付「饭票」，没有饭票就只能挨饿。饭票的获取途径：
+
+■ 通过 Prison Labor（Avius 版）打工赚取工资；
+
+■ 出卖自己身上的非致命器官（一颗肾脏 / 一叶肺）换取饭票；
+
+■ 玩家也可以手动发放或扣除饭票，救济或惩罚某个囚犯。
+
+<size=18><b>食物定价</b></size>
+■ 饭票价格由食物的市场价值决定（精致食物贵于简单食物，营养膏按营养值折算）；
+
+■ 玩家可在设置中调整全局「食物价格倍率」；
+
+■ 每位囚犯可单独设置「个人食物倍率」，例如重点照顾某个高价值囚犯。
+
+<size=18><b>工资系统</b></size>
+■ 当 Prison Labor 标记囚犯「正在工作」时，每游戏小时发放一次饭票工资；
+
+■ 全局「工资倍率」+ 囚犯个人「工资倍率」可叠加调整；
+
+■ 未安装 Prison Labor 时该功能自动关闭，囚犯只能靠器官贩卖或玩家手动发放获得饭票（MOD 仍可正常运行）。
+
+<size=18><b>器官贩卖</b></size>
+■ 新增两种医疗配方：「摘取肾脏换饭票」与「摘取肺换饭票」；
+
+■ 自动防止致命摘取：仅当囚犯还剩两颗肾/肺时才能再摘一颗；
+
+■ 摘下的器官会作为物品正常生成，囚犯获得对应饭票奖励；
+
+■ 设置页可一键关闭器官贩卖（不影响其他功能），并可为单个囚犯覆盖此设置。
+
+<size=18><b>UI 与交互</b></size>
+■ 选中囚犯时面板出现四个按钮：发放饭票 / 扣除饭票 / 配置囚犯 / 饭票余额；
+
+■「配置囚犯」窗口可调整该囚犯的个人食物倍率、个人工资倍率、是否允许卖器官，并可一键恢复默认；
+
+■ 设置 → MOD → 囚犯付费吃饭2 提供完整全局配置。
+
+<size=18><b>边界处理</b></size>
+■ 囚犯精神崩溃或在越狱中时跳过饭票检查（可在设置中关闭）；
+
+■ 新抓捕的囚犯获得初始饭票（数量可配置）；
+
+■ 饭票不为负数；余额不足时不会饿死，但会弹出提示并尽量扣除已有的部分。
+
+<size=18><b>对话 / 兼容性</b></size>
+■ 提供简体中文与英文双语 UI；
+
+■ 软依赖 Prison Labor（avius.prisonlabor），不强制要求；
+
+■ 完全基于 Harmony patch + 自定义 RecipeWorker，不修改核心代码，与绝大多数 MOD 兼容。
+
+<size=14><color=#888888>由 ZCode（deepseek-v4*glm5.2*kimi-k3） 制作 · 版本 2.0 · 适配 RimWorld 1.6</color></size>
+]]></description>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>avius.prisonlabor</li>
+  </loadAfter>
+</ModMetaData>

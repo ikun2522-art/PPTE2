@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Template for a local machine path config.
+
+  Copy this file to "Directory.Build.props" next to it (it is git-ignored)
+  and set the two dirs to your own machine:
+      RimWorldDir : your RimWorld install root (contains RimWorldWin64_Data\Managed)
+      HarmonyDir  : folder containing 0Harmony.dll (from the Harmony mod in the workshop)
+  Examples:
+      <RimWorldDir>C:\Program Files (x86)\Steam\steamapps\common\RimWorld</RimWorldDir>
+      <HarmonyDir>C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2009463077\Current\Assemblies</HarmonyDir>
+-->
+<Project>
+  <PropertyGroup>
+    <RimWorldDir>YOUR_RIMWORLD_INSTALL_DIR</RimWorldDir>
+    <HarmonyDir>YOUR_HARMONY_DLL_DIR</HarmonyDir>
+  </PropertyGroup>
+</Project>

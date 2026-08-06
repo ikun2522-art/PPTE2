@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!--Recipe: remove one kidney (non-lethal). Worker pays out meal tickets in C# code.-->
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>PPTE2_RemoveKidney</defName>
+    <label>remove kidney for tickets</label>
+    <description>Surgically remove one of the prisoner's kidneys. The prisoner earns meal tickets in exchange. Only one kidney per prisoner can be sold.</description>
+    <workerClass>PrisonersPayToEat2.RecipeWorker_OrganSale</workerClass>
+    <jobString>harvesting kidney for tickets</jobString>
+    <workAmount>2500</workAmount>
+    <developmentalStageFilter>Child, Adult</developmentalStageFilter>
+    <appliedOnFixedBodyParts>
+      <li>Kidney</li>
+    </appliedOnFixedBodyParts>
+    <surgerySuccessChanceFactor>1</surgerySuccessChanceFactor>
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+            <li>Medicine</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <categories>
+        <li>Medicine</li>
+      </categories>
+    </fixedIngredientFilter>
+  </RecipeDef>
+
+  <!--Recipe: remove one lung (non-lethal). Worker pays out meal tickets in C# code.-->
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>PPTE2_RemoveLungLobe</defName>
+    <label>remove lung for tickets</label>
+    <description>Surgically remove one of the prisoner's lungs. The prisoner earns meal tickets in exchange. Only one lung per prisoner can be sold.</description>
+    <workerClass>PrisonersPayToEat2.RecipeWorker_OrganSale</workerClass>
+    <jobString>harvesting lung for tickets</jobString>
+    <workAmount>3000</workAmount>
+    <developmentalStageFilter>Child, Adult</developmentalStageFilter>
+    <appliedOnFixedBodyParts>
+      <li>Lung</li>
+    </appliedOnFixedBodyParts>
+    <surgerySuccessChanceFactor>1</surgerySuccessChanceFactor>
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+            <li>Medicine</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <categories>
+        <li>Medicine</li>
+      </categories>
+    </fixedIngredientFilter>
+  </RecipeDef>
+
+</Defs>

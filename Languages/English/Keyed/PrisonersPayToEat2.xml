@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Settings -->
+  <PPTE2_SettingsCategory>Prisoners Pay To Eat 2</PPTE2_SettingsCategory>
+  <PPTE2_TabGeneral>General</PPTE2_TabGeneral>
+  <PPTE2_TabWorkWages>Work wages</PPTE2_TabWorkWages>
+  <PPTE2_TabFoodPrices>Food prices</PPTE2_TabFoodPrices>
+  <PPTE2_SectionGeneral>General settings</PPTE2_SectionGeneral>
+  <PPTE2_SectionFoodPrices>Custom food prices</PPTE2_SectionFoodPrices>
+  <PPTE2_Search>Search</PPTE2_Search>
+  <PPTE2_ResetSearch>Reset</PPTE2_ResetSearch>
+  <PPTE2_ClearAllFoodPrices>Clear all overrides</PPTE2_ClearAllFoodPrices>
+  <PPTE2_HdrFoodName>Food</PPTE2_HdrFoodName>
+  <PPTE2_HdrBaseMarketValue>Base value</PPTE2_HdrBaseMarketValue>
+  <PPTE2_HdrCustomPrice>Price (tickets)</PPTE2_HdrCustomPrice>
+  <PPTE2_EnableOrganHarvest>Enable organ sale</PPTE2_EnableOrganHarvest>
+  <PPTE2_FoodMul>Global food price multiplier: {0}</PPTE2_FoodMul>
+  <PPTE2_WageMul>Global wage multiplier: {0}</PPTE2_WageMul>
+  <PPTE2_DefaultWagePerHour>Default tickets per hour: {0}</PPTE2_DefaultWagePerHour>
+  <PPTE2_SectionWorkTypeWages>Per work-type tickets per hour</PPTE2_SectionWorkTypeWages>
+  <PPTE2_WorkTypeWagesHint>Leave blank to use the default rate. Which work types a prisoner may do is decided by Prison Labor.</PPTE2_WorkTypeWagesHint>
+  <PPTE2_ResetWorkTypeWages>Reset all</PPTE2_ResetWorkTypeWages>
+  <PPTE2_FillWorkTypeWages>Fill defaults</PPTE2_FillWorkTypeWages>
+  <PPTE2_SilverRate>Tickets per silver of value: {0}</PPTE2_SilverRate>
+  <PPTE2_StartingTickets>Starting tickets per prisoner: {0}</PPTE2_StartingTickets>
+  <PPTE2_IgnoreRiot>Ignore ticket check during mental break / prison break</PPTE2_IgnoreRiot>
+  <PPTE2_VerboseLog>Verbose logging</PPTE2_VerboseLog>
+  <PPTE2_TicketDefaultName>meal ticket</PPTE2_TicketDefaultName>
+  <PPTE2_TicketDefaultUnit>tickets</PPTE2_TicketDefaultUnit>
+  <PPTE2_BalanceCardTitleFormat>{0} balance</PPTE2_BalanceCardTitleFormat>
+  <PPTE2_TicketNameLabel>Ticket name:</PPTE2_TicketNameLabel>
+  <PPTE2_TicketNamePreview>Current ticket name: {0}</PPTE2_TicketNamePreview>
+
+  <!-- Inspect / Gizmo -->
+  <PPTE2_GizmoGive>Give {0}</PPTE2_GizmoGive>
+  <PPTE2_GizmoGiveDesc>Manually give {0}(s) to this prisoner.</PPTE2_GizmoGiveDesc>
+  <PPTE2_GizmoTake>Take {0}</PPTE2_GizmoTake>
+  <PPTE2_GizmoTakeDesc>Manually take {0}(s) from this prisoner.</PPTE2_GizmoTakeDesc>
+  <PPTE2_GizmoConfig>Configure prisoner</PPTE2_GizmoConfig>
+  <PPTE2_GizmoConfigDesc>Adjust this prisoner's individual food price and wage multipliers.</PPTE2_GizmoConfigDesc>
+  <PPTE2_GizmoBalance>Tickets: {0}</PPTE2_GizmoBalance>
+  <PPTE2_GizmoBalanceDesc>This prisoner's current ticket balance.</PPTE2_GizmoBalanceDesc>
+  <PPTE2_BalanceCardUnit>tickets</PPTE2_BalanceCardUnit>
+  <PPTE2_BalanceDisplay>Meal tickets: {0}</PPTE2_BalanceDisplay>
+  <PPTE2_NoTicketsToTake>This prisoner has no {0}(s) to take.</PPTE2_NoTicketsToTake>
+
+  <!-- Dialog_GiveTickets -->
+  <PPTE2_GiveDialogTitle>Give {0}(s)</PPTE2_GiveDialogTitle>
+  <PPTE2_TakeDialogTitle>Take {0}(s)</PPTE2_TakeDialogTitle>
+  <PPTE2_CurrentBalance>Current balance: {0}</PPTE2_CurrentBalance>
+  <PPTE2_InvalidNumber>Please enter a positive number (decimals supported).</PPTE2_InvalidNumber>
+  <PPTE2_GaveTickets>Gave {1} {2}(s) to {0}.</PPTE2_GaveTickets>
+  <PPTE2_TookTickets>Took {1} {2}(s) from {0}.</PPTE2_TookTickets>
+
+  <!-- Window_PrisonerConfig -->
+  <PPTE2_BalanceLabel>{1} balance: {0}</PPTE2_BalanceLabel>
+  <PPTE2_FoodMulLabel>Individual food price multiplier: {0}</PPTE2_FoodMulLabel>
+  <PPTE2_WageMulLabel>Individual wage multiplier: {0}</PPTE2_WageMulLabel>
+  <PPTE2_OverrideOrganHarvest>Override global organ-sale setting</PPTE2_OverrideOrganHarvest>
+  <PPTE2_AllowOrganHarvest>Allow selling organs for this prisoner</PPTE2_AllowOrganHarvest>
+  <PPTE2_GlobalSetting>Using global setting: {0}</PPTE2_GlobalSetting>
+  <PPTE2_Enabled>enabled</PPTE2_Enabled>
+  <PPTE2_Disabled>disabled</PPTE2_Disabled>
+  <PPTE2_ResetDefaults>Reset to defaults</PPTE2_ResetDefaults>
+
+  <!-- Messages -->
+  <PPTE2_NoTickets>{0} lacks {1} {2}(s) (had {3}).</PPTE2_NoTickets>
+  <PPTE2_OrganSold>{0} sold a {1} for {2} {3}(s).</PPTE2_OrganSold>
+
+</LanguageData>

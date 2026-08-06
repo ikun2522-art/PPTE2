@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- 设置 -->
+  <PPTE2_SettingsCategory>囚犯付费吃饭2</PPTE2_SettingsCategory>
+  <PPTE2_TabGeneral>通用设置</PPTE2_TabGeneral>
+  <PPTE2_TabWorkWages>按工种饭票</PPTE2_TabWorkWages>
+  <PPTE2_TabFoodPrices>食物价格</PPTE2_TabFoodPrices>
+  <PPTE2_SectionGeneral>通用设置</PPTE2_SectionGeneral>
+  <PPTE2_SectionFoodPrices>自定义食物价格</PPTE2_SectionFoodPrices>
+  <PPTE2_Search>搜索</PPTE2_Search>
+  <PPTE2_ResetSearch>重置</PPTE2_ResetSearch>
+  <PPTE2_ClearAllFoodPrices>清空全部覆盖</PPTE2_ClearAllFoodPrices>
+  <PPTE2_HdrFoodName>食物</PPTE2_HdrFoodName>
+  <PPTE2_HdrBaseMarketValue>基础市价</PPTE2_HdrBaseMarketValue>
+  <PPTE2_HdrCustomPrice>价格（饭票）</PPTE2_HdrCustomPrice>
+  <PPTE2_EnableOrganHarvest>启用器官贩卖</PPTE2_EnableOrganHarvest>
+  <PPTE2_FoodMul>全局食物价格倍率：{0}</PPTE2_FoodMul>
+  <PPTE2_WageMul>全局工资倍率：{0}</PPTE2_WageMul>
+  <PPTE2_DefaultWagePerHour>默认每小时饭票：{0}</PPTE2_DefaultWagePerHour>
+  <PPTE2_SectionWorkTypeWages>按工种设置每小时饭票</PPTE2_SectionWorkTypeWages>
+  <PPTE2_WorkTypeWagesHint>留空使用默认每小时饭票。工种是否允许由 Prison Labor 控制。</PPTE2_WorkTypeWagesHint>
+  <PPTE2_ResetWorkTypeWages>重置全部</PPTE2_ResetWorkTypeWages>
+  <PPTE2_FillWorkTypeWages>填充默认</PPTE2_FillWorkTypeWages>
+  <PPTE2_SilverRate>每银币价值可换饭票数：{0}</PPTE2_SilverRate>
+  <PPTE2_StartingTickets>新囚犯初始饭票数：{0}</PPTE2_StartingTickets>
+  <PPTE2_IgnoreRiot>精神崩溃 / 越狱期间跳过饭票检查</PPTE2_IgnoreRiot>
+  <PPTE2_VerboseLog>详细日志</PPTE2_VerboseLog>
+  <PPTE2_TicketDefaultName>饭票</PPTE2_TicketDefaultName>
+  <PPTE2_TicketDefaultUnit>张</PPTE2_TicketDefaultUnit>
+  <PPTE2_BalanceCardTitleFormat>{0}余额</PPTE2_BalanceCardTitleFormat>
+  <PPTE2_TicketNameLabel>饭票名称：</PPTE2_TicketNameLabel>
+  <PPTE2_TicketNamePreview>当前饭票名称：{0}</PPTE2_TicketNamePreview>
+
+  <!-- 选中 / Gizmo -->
+  <PPTE2_GizmoGive>发放{0}</PPTE2_GizmoGive>
+  <PPTE2_GizmoGiveDesc>手动给该囚犯发放{0}。</PPTE2_GizmoGiveDesc>
+  <PPTE2_GizmoTake>扣除{0}</PPTE2_GizmoTake>
+  <PPTE2_GizmoTakeDesc>手动从该囚犯扣除{0}。</PPTE2_GizmoTakeDesc>
+  <PPTE2_GizmoConfig>配置该囚犯</PPTE2_GizmoConfig>
+  <PPTE2_GizmoConfigDesc>调整该囚犯的个人食物价格与工资倍率。</PPTE2_GizmoConfigDesc>
+  <PPTE2_GizmoBalance>饭票：{0}</PPTE2_GizmoBalance>
+  <PPTE2_GizmoBalanceDesc>该囚犯当前的饭票余额。</PPTE2_GizmoBalanceDesc>
+  <PPTE2_BalanceCardUnit>张</PPTE2_BalanceCardUnit>
+  <PPTE2_BalanceDisplay>饭票余额：{0}</PPTE2_BalanceDisplay>
+  <PPTE2_NoTicketsToTake>该囚犯没有{0}可扣除。</PPTE2_NoTicketsToTake>
+
+  <!-- Dialog_GiveTickets -->
+  <PPTE2_GiveDialogTitle>发放{0}</PPTE2_GiveDialogTitle>
+  <PPTE2_TakeDialogTitle>扣除{0}</PPTE2_TakeDialogTitle>
+  <PPTE2_CurrentBalance>当前余额：{0}</PPTE2_CurrentBalance>
+  <PPTE2_InvalidNumber>请输入大于 0 的数字（支持小数）。</PPTE2_InvalidNumber>
+  <PPTE2_GaveTickets>已给 {0} 发放 {1} 个{2}。</PPTE2_GaveTickets>
+  <PPTE2_TookTickets>已从 {0} 扣除 {1} 个{2}。</PPTE2_TookTickets>
+
+  <!-- Window_PrisonerConfig -->
+  <PPTE2_BalanceLabel>{1}余额：{0}</PPTE2_BalanceLabel>
+  <PPTE2_FoodMulLabel>个人食物价格倍率：{0}</PPTE2_FoodMulLabel>
+  <PPTE2_WageMulLabel>个人工资倍率：{0}</PPTE2_WageMulLabel>
+  <PPTE2_OverrideOrganHarvest>覆盖全局器官贩卖设置</PPTE2_OverrideOrganHarvest>
+  <PPTE2_AllowOrganHarvest>允许该囚犯贩卖器官</PPTE2_AllowOrganHarvest>
+  <PPTE2_GlobalSetting>当前使用全局设置：{0}</PPTE2_GlobalSetting>
+  <PPTE2_Enabled>已启用</PPTE2_Enabled>
+  <PPTE2_Disabled>已禁用</PPTE2_Disabled>
+  <PPTE2_ResetDefaults>恢复默认值</PPTE2_ResetDefaults>
+
+  <!-- 消息 -->
+  <PPTE2_NoTickets>{0} 缺少 {1} 个{2}（仅有 {3} 个）。</PPTE2_NoTickets>
+  <PPTE2_OrganSold>{0} 出卖了一颗 {1}，换得 {2} 个{3}。</PPTE2_OrganSold>
+
+</LanguageData>
