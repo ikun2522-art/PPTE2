@@ -1,6 +1,9 @@
 # 囚犯付费吃饭2（Prisoners Pay To Eat 2）
 
 [![RimWorld 1.6](https://img.shields.io/badge/RimWorld-1.6-blue)](https://store.steampowered.com/app/294100/RimWorld/)
+[![Steam Workshop](https://img.shields.io/badge/Steam-Workshop-1b2838?logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3780939234)
+
+> ⚠️ 实验性版本（Exp）· Experimental build
 
 囚犯再也不能白嫖殖民地的食物了！每一位囚犯进食都必须支付「饭票」，没有饭票就只能挨饿。
 
@@ -21,9 +24,15 @@ Prisoners can no longer freeload off your colony's food supply! Every meal a pri
 ### ⛏️ Prison Labor 打工赚饭票 / Earn Tickets Through Prison Labor
 - 集成 Avius 的 **Prison Labor** MOD：哪些工种囚犯能做、工作区域、动机系统完全由 Prison Labor 管理
 - 按**工作种类**分别设置每小时饭票（如挖矿 2/小时、清洁 1/小时、种植 0.5/小时）
+- **按时 / 按量双计费**：每个工种可单独切换按量计费，按产出发饭票——生产台按批次、采矿按矿脉、建造按建筑、种植/砍伐/播种按株、搬运按次、清洁按块、研究按科技（多人按贡献比例分）
+- **未知工种通用兜底**：其他 MOD 新增的工种自动支持按量（按完成一次工作计费），无需额外配置
+- 每个囚犯可单独覆盖计费方式（跟随全局 / 按时 / 按量）
 - 全局工资倍率 + 每个囚犯的**个人工资倍率**可叠加调整
 - Integrates Avius's **Prison Labor** MOD: which work types a prisoner may do is fully decided by Prison Labor.
 - Per-work-type hourly wages (e.g. mining 2/hr, cleaning 1/hr, growing 0.5/hr).
+- **Hourly or piece-rate billing per work type**: piece rate pays per completed output — production per recipe batch, mining per vein, construction per building, growing/cutting per plant, hauling per haul, cleaning per filth, research per tech (split among contributors by work share).
+- **Generic fallback for unknown work types**: work types added by other MODs support piece rate automatically (paid per completed job).
+- Per-prisoner billing override (follow global / hourly / piece-rate).
 - Global wage multiplier + per-prisoner wage multiplier stack.
 
 ### 🏥 贩卖器官换饭票 / Sell Organs for Tickets
@@ -38,10 +47,10 @@ Prisoners can no longer freeload off your colony's food supply! Every meal a pri
 
 ### 🎛️ 玩家管理 / Player Controls
 - 选中囚犯：**发放饭票** / **扣除饭票** / **配置囚犯** 按钮 + 饭票余额卡片
-- 每个囚犯单独配置：个人食物倍率、个人工资倍率、是否允许贩卖器官
+- 每个囚犯单独配置：个人食物倍率、个人工资倍率、计费方式（按时/按量）、是否允许贩卖器官
 - 手动发放/扣除支持小数
 - Selected prisoner gizmos: give tickets / take tickets / configure / live balance card.
-- Per-prisoner settings: food multiplier, wage multiplier, organ-sale permission.
+- Per-prisoner settings: food multiplier, wage multiplier, billing mode (hourly/piece-rate), organ-sale permission.
 - Manual give/take supports decimals.
 
 ### ⚙️ 其他 / Extras
@@ -69,13 +78,17 @@ RimWorld **1.6** required.
 
 ## 🚀 安装 / Installation
 
-> ⚠️ 本 MOD 目前**尚未发布到 Steam 创意工坊**，也未提供 Releases 下载包。以下为本地/手动安装方式。
+**方式一：Steam 创意工坊（推荐）**
+1. 在 [Steam 创意工坊](https://steamcommunity.com/sharedfiles/filedetails/?id=3780939234) 订阅「囚犯付费吃饭2（Prisoners Pay To Eat 2）」
+2. 游戏启动器 → MOD → 启用「囚犯付费吃饭2」
 
-**方式一：直接放入 Mods 目录**
+> ⚠️ 当前为**实验性（Exp）版本**，功能仍在完善中。
+
+**方式二：直接放入 Mods 目录**
 1. 将整个 `PrisonersPayToEat2` 文件夹复制到 `RimWorld/Mods/` 下（注意不是把里面的文件散开，是整个文件夹）
 2. 启动游戏 → 游戏启动器 → MOD → 勾选启用「囚犯付费吃饭2」
 
-**方式二：从 GitHub 拉取**
+**方式三：从 GitHub 拉取**
 ```bash
 git clone https://github.com/ikun2522-art/PPTE2.git RimWorld/Mods/PrisonersPayToEat2
 ```
