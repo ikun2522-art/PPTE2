@@ -60,6 +60,7 @@
     <Compile Include="PrisonersPayToEat2Settings.cs" />
     <Compile Include="PrisonersPayToEat2Manager.cs" />
     <Compile Include="RansomTicker.cs" />
+    <Compile Include="Hediff_MealTickets.cs" />
     <Compile Include="MarketPriceHelper.cs" />
     <Compile Include="PPTEName.cs" />
     <Compile Include="OrganHarvestHelper.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="Patches\Harmony_UI.cs" />
     <Compile Include="Patches\Harmony_PrisonLabor.cs" />
     <Compile Include="Patches\Harmony_PieceRate.cs" />
-    <Compile Include="Patches\Harmony_HealthTab.cs" />
     <Compile Include="UI\Window_PrisonerConfig.cs" />
     <Compile Include="UI\Window_PrisonerMenu.cs" />
     <Compile Include="UI\Dialog_GiveTickets.cs" />

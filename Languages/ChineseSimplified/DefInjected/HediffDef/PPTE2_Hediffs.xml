@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <PPTE2_MealTickets.label>饭票状态</PPTE2_MealTickets.label>
+  <PPTE2_MealTickets.description>该囚犯当前拥有的饭票数量。</PPTE2_MealTickets.description>
+</LanguageData>

@@ -87,9 +87,9 @@
   <PPTE2_RansomNotEligible>Requirements not met yet.</PPTE2_RansomNotEligible>
   <PPTE2_RansomCooldown>Request rejected — wait {0} more days.</PPTE2_RansomCooldown>
 
-  <!-- Health tab -->
-  <PPTE2_HealthTabBalance>{1} balance: {0} {2}</PPTE2_HealthTabBalance>
-  <PPTE2_HealthTabRansomPending>Ransom approval pending!</PPTE2_HealthTabRansomPending>
+  <!-- Health status (Hediff) -->
+  <PPTE2_HediffLabel>{1}: {0}</PPTE2_HediffLabel>
+  <PPTE2_HediffTip_Balance>{1} balance: {0} {2}</PPTE2_HediffTip_Balance>
 
   <!-- Messages -->
   <PPTE2_NoTickets>{0} lacks {1} {2}(s) (had {3}).</PPTE2_NoTickets>

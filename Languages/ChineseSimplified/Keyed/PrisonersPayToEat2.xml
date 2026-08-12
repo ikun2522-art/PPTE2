@@ -87,9 +87,9 @@
   <PPTE2_RansomNotEligible>尚未满足赎身条件。</PPTE2_RansomNotEligible>
   <PPTE2_RansomCooldown>请求被拒绝，需等待 {0} 天才能再次提出。</PPTE2_RansomCooldown>
 
-  <!-- 健康标签页 -->
-  <PPTE2_HealthTabBalance>{1}余额：{0} {2}</PPTE2_HealthTabBalance>
-  <PPTE2_HealthTabRansomPending>赎身请求待批准！</PPTE2_HealthTabRansomPending>
+  <!-- 健康状态（Hediff） -->
+  <PPTE2_HediffLabel>{1}：{0}</PPTE2_HediffLabel>
+  <PPTE2_HediffTip_Balance>{1}余额：{0} {2}</PPTE2_HediffTip_Balance>
 
   <!-- 消息 -->
   <PPTE2_NoTickets>{0} 缺少 {1} 个{2}（仅有 {3} 个）。</PPTE2_NoTickets>

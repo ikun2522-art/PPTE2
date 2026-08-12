@@ -64,6 +64,10 @@ namespace PrisonersPayToEat2
         // pawn.thingIDNumber. Used for the ransom minimum-imprisonment-time requirement.
         private Dictionary<int, int> prisonStartTick = new Dictionary<int, int>();
 
+        // Meal-ticket health-status hediff maintenance (see EnsureTicketHediffs).
+        private static HediffDef ticketHediffDef;
+        private int lastHediffCheckTick = -1;
+
         public PrisonersPayToEat2Manager() { }
         public PrisonersPayToEat2Manager(Game game) { }
 
@@ -265,6 +269,53 @@ namespace PrisonersPayToEat2
             base.GameComponentTick();
             PrisonLaborWageTicker.Tick();
             RansomTicker.Tick();
+            EnsureTicketHediffs();
+        }
+
+        /// <summary>
+        /// Keeps the meal-ticket "health status" hediff in sync: adds it to every colony prisoner
+        /// (so the balance shows in their health tab) and removes leftovers from pawns that are no
+        /// longer prisoners (released / recruited / escaped / dead).
+        /// </summary>
+        private void EnsureTicketHediffs()
+        {
+            int now = Find.TickManager.TicksGame;
+            if (now - lastHediffCheckTick < 120) return; // check every 0.05 day
+            lastHediffCheckTick = now;
+
+            if (ticketHediffDef == null)
+            {
+                // not cached while defs are still loading (null is retried next check)
+                ticketHediffDef = DefDatabase<HediffDef>.GetNamedSilentFail("PPTE2_MealTickets");
+                if (ticketHediffDef == null) return;
+            }
+
+            foreach (var map in Find.Maps)
+            {
+                if (map == null) continue;
+
+                var prisoners = map.mapPawns.PrisonersOfColony;
+                for (int i = 0; i < prisoners.Count; i++)
+                {
+                    var pawn = prisoners[i];
+                    if (pawn == null || pawn.Dead) continue;
+                    var set = pawn.health?.hediffSet;
+                    if (set == null) continue;
+                    if (set.GetFirstHediffOfDef(ticketHediffDef) == null)
+                        pawn.health.AddHediff(HediffMaker.MakeHediff(ticketHediffDef, pawn));
+                }
+
+                // sweep spawned pawns for leftover ticket hediffs (no longer prisoners)
+                foreach (var pawn in map.mapPawns.AllPawnsSpawned)
+                {
+                    if (pawn == null || pawn.Dead) continue;
+                    if (pawn.IsPrisonerOfColony) continue;
+                    var set = pawn.health?.hediffSet;
+                    if (set == null) continue;
+                    var hediff = set.GetFirstHediffOfDef(ticketHediffDef);
+                    if (hediff != null) pawn.health.RemoveHediff(hediff);
+                }
+            }
         }
     }
 }

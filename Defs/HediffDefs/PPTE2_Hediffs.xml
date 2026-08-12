@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- 饭票状态：以"健康状态"行显示在囚犯的健康标签页 -->
+  <HediffDef>
+    <defName>PPTE2_MealTickets</defName>
+    <hediffClass>PrisonersPayToEat2.Hediff_MealTickets</hediffClass>
+    <label>meal tickets</label>
+    <description>The amount of meal tickets this prisoner has.</description>
+    <isBad>false</isBad>
+    <everCurableByItem>false</everCurableByItem>
+    <tendable>false</tendable>
+    <makesAlert>false</makesAlert>
+    <initialSeverity>0.01</initialSeverity>
+    <minSeverity>0.01</minSeverity>
+    <maxSeverity>1</maxSeverity>
+    <stages>
+      <li>
+        <becomeVisible>true</becomeVisible>
+      </li>
+    </stages>
+  </HediffDef>
+
+</Defs>

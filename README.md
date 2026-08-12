@@ -57,11 +57,11 @@ Prisoners can no longer freeload off your colony's food supply! Every meal a pri
 
 ### 🎛️ 玩家管理 / Player Controls
 - 选中囚犯：一个**「囚犯饭票」按钮**整合全部操作——饭票余额、发放/扣除饭票、配置囚犯、赎身批准
-- 囚犯的**健康标签页**顶部直接显示饭票余额，赎身请求待批准时高亮提示
+- 囚犯的**健康标签页**会以「健康状态」形式直接显示饭票余额，颜色随余额变化（绿/黄/橙/红），悬停可见具体数量
 - 每个囚犯单独配置：个人食物倍率、个人工资倍率、计费方式（按时/按量）、是否允许贩卖器官、赎身所需饭票与最短囚禁天数
 - 手动发放/扣除支持小数
 - One **"Prisoner tickets" button** on a selected prisoner gathers every control — balance, give/take tickets, configure, ransom approval.
-- The prisoner's **health tab** shows the ticket balance at the top, with a highlight when a ransom request awaits approval.
+- The prisoner's **health tab** shows the ticket balance as a "health status" row, colored by how much is left (green/yellow/orange/red); hover for the exact amount.
 - Per-prisoner settings: food multiplier, wage multiplier, billing mode (hourly/piece-rate), organ-sale permission, ransom ticket count & minimum imprisonment time.
 - Manual give/take supports decimals.
 
