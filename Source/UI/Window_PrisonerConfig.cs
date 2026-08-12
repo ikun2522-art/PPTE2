@@ -13,7 +13,7 @@ namespace PrisonersPayToEat2
         private readonly Pawn _prisoner;
         private PrisonerTicketData _data;
 
-        public override Vector2 InitialSize => new Vector2(420f, 360f);
+        public override Vector2 InitialSize => new Vector2(440f, 560f);
 
         public Window_PrisonerConfig(Pawn prisoner)
         {
@@ -90,7 +90,45 @@ namespace PrisonersPayToEat2
                 _data.wageMode = PieceRateMode.Follow;
                 _data.organHarvestOverrideEnabled = false;
                 _data.organHarvestOverride = false;
+                _data.ransomTicketOverride = 0f;
+                _data.ransomMinDaysOverride = 0f;
             }
+
+            list.Gap(16f);
+            list.Label("PPTE2_RansomOverrideTitle".Translate());
+            list.Gap(4f);
+
+            // ransom ticket override (0 = follow global)
+            string bufTicket = _data.ransomTicketOverride > 0f ? _data.ransomTicketOverride.ToString("0.##") : "";
+            float oy = list.CurHeight;
+            Widgets.Label(new Rect(inRect.x, oy + 2f, 230f, 24f), "PPTE2_RansomTicketOverrideLabel".Translate());
+            string newBufTicket = Widgets.TextField(new Rect(inRect.x + 240f, oy, 110f, 26f), bufTicket);
+            if (newBufTicket != bufTicket)
+            {
+                if (float.TryParse(newBufTicket, out float res) && res > 0f) _data.ransomTicketOverride = res;
+                else _data.ransomTicketOverride = 0f;
+            }
+            list.Gap(32f);
+
+            // ransom minimum days override (0 = follow global)
+            string bufDays = _data.ransomMinDaysOverride > 0f ? _data.ransomMinDaysOverride.ToString("0.#") : "";
+            float oy2 = list.CurHeight;
+            Widgets.Label(new Rect(inRect.x, oy2 + 2f, 230f, 24f), "PPTE2_RansomMinDaysOverrideLabel".Translate());
+            string newBufDays = Widgets.TextField(new Rect(inRect.x + 240f, oy2, 110f, 26f), bufDays);
+            if (newBufDays != bufDays)
+            {
+                if (float.TryParse(newBufDays, out float res) && res > 0f) _data.ransomMinDaysOverride = res;
+                else _data.ransomMinDaysOverride = 0f;
+            }
+            list.Gap(32f);
+
+            // effective values currently in use
+            var mgr = PrisonersPayToEat2Manager.Current;
+            GUI.color = new Color(0.7f, 0.7f, 0.65f);
+            list.Label("PPTE2_RansomEffective".Translate(
+                mgr.EffectiveRansomCost(_prisoner).ToString("0.##"),
+                mgr.EffectiveRansomMinDays(_prisoner).ToString("0.#")));
+            GUI.color = Color.white;
 
             list.End();
         }

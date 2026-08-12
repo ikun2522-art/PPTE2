@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Verse;
 using RimWorld;
 
@@ -18,6 +19,10 @@ namespace PrisonersPayToEat2
         public bool organHarvestOverrideEnabled;
         public bool kidneyTaken;
         public bool lungLobeTaken;
+        public float ransomTicketOverride;    // ransom tickets needed; 0 = follow global setting
+        public float ransomMinDaysOverride;   // minimum days imprisoned; 0 = follow global setting
+        public bool ransomRequested;          // prisoner asked to buy freedom, awaiting player decision
+        public int ransomDeniedUntilTick = -1; // rejection cooldown (TicksGame); -1 = none
 
         public void ExposeData()
         {
@@ -29,6 +34,10 @@ namespace PrisonersPayToEat2
             Scribe_Values.Look(ref organHarvestOverrideEnabled, "organHarvestOverrideEnabled", false);
             Scribe_Values.Look(ref kidneyTaken, "kidneyTaken", false);
             Scribe_Values.Look(ref lungLobeTaken, "lungLobeTaken", false);
+            Scribe_Values.Look(ref ransomTicketOverride, "ransomTicketOverride", 0f);
+            Scribe_Values.Look(ref ransomMinDaysOverride, "ransomMinDaysOverride", 0f);
+            Scribe_Values.Look(ref ransomRequested, "ransomRequested", false);
+            Scribe_Values.Look(ref ransomDeniedUntilTick, "ransomDeniedUntilTick", -1);
         }
     }
 
@@ -50,6 +59,10 @@ namespace PrisonersPayToEat2
         // project completes (see PieceRateWorker.DistributeResearch).
         public Dictionary<ResearchProjectDef, Dictionary<Pawn, float>> researchContrib =
             new Dictionary<ResearchProjectDef, Dictionary<Pawn, float>>();
+
+        // Tick (TicksGame) at which each pawn became a prisoner of the colony, keyed by
+        // pawn.thingIDNumber. Used for the ransom minimum-imprisonment-time requirement.
+        private Dictionary<int, int> prisonStartTick = new Dictionary<int, int>();
 
         public PrisonersPayToEat2Manager() { }
         public PrisonersPayToEat2Manager(Game game) { }
@@ -126,6 +139,113 @@ namespace PrisonersPayToEat2
                  : false;
         }
 
+        // ================= Ransom (赎身) =================
+
+        /// <summary>Tickets the prisoner must pay to buy freedom (per-prisoner override wins).</summary>
+        public float EffectiveRansomCost(Pawn p)
+        {
+            var d = DataFor(p);
+            if (d.ransomTicketOverride > 0f) return d.ransomTicketOverride;
+            return PrisonersPayToEat2Mod.Settings.ransomTicketCost;
+        }
+
+        /// <summary>Minimum days imprisoned before ransom is allowed (override wins).</summary>
+        public float EffectiveRansomMinDays(Pawn p)
+        {
+            var d = DataFor(p);
+            if (d.ransomMinDaysOverride > 0f) return d.ransomMinDaysOverride;
+            return PrisonersPayToEat2Mod.Settings.ransomMinDays;
+        }
+
+        /// <summary>Whole days since the pawn became a prisoner (0 when unknown).</summary>
+        public float ImprisonedDays(Pawn p)
+        {
+            if (p == null) return 0f;
+            if (!prisonStartTick.TryGetValue(p.thingIDNumber, out int start)) return 0f;
+            return Mathf.Max(0f, (Find.TickManager.TicksGame - start) / 60000f);
+        }
+
+        /// <summary>True when balance and imprisonment-time requirements are met.</summary>
+        public bool CanRansom(Pawn p)
+        {
+            if (p == null || !p.IsPrisonerOfColony) return false;
+            if (Balance(p) < EffectiveRansomCost(p)) return false;
+            if (ImprisonedDays(p) < EffectiveRansomMinDays(p)) return false;
+            return true;
+        }
+
+        public bool HasPrisonStartTick(int pawnId) => prisonStartTick.ContainsKey(pawnId);
+        public void SetPrisonStartTick(int pawnId, int tick) => prisonStartTick[pawnId] = tick;
+        public void RemovePrisonStartTick(int pawnId) => prisonStartTick.Remove(pawnId);
+
+        /// <summary>Forget imprisonment start for pawns that are no longer prisoners (released/recruited/escaped/dead).</summary>
+        public void PrunePrisonStartTicks(HashSet<int> livePrisonerIds)
+        {
+            if (livePrisonerIds == null) return;
+            var stale = new List<int>();
+            foreach (int id in prisonStartTick.Keys)
+                if (!livePrisonerIds.Contains(id)) stale.Add(id);
+            foreach (int id in stale) prisonStartTick.Remove(id);
+        }
+
+        /// <summary>Clear per-session request state when a pawn starts a fresh imprisonment.</summary>
+        public void ResetRansomSession(int pawnId)
+        {
+            if (!data.TryGetValue(pawnId, out var d)) return;
+            d.ransomRequested = false;
+            d.ransomDeniedUntilTick = -1;
+        }
+
+        /// <summary>The prisoner asks to buy freedom; the player must approve before release.</summary>
+        public void RequestRansom(Pawn p)
+        {
+            var d = DataFor(p);
+            if (d.ransomRequested) return;
+            d.ransomRequested = true;
+            float cost = EffectiveRansomCost(p);
+            Messages.Message("PPTE2_RansomRequestMsg".Translate(
+                p.LabelShortCap, cost.ToString("0.##"), PPTEName.Ticket), p, MessageTypeDefOf.NeutralEvent);
+        }
+
+        /// <summary>
+        /// Player approves the ransom: the prisoner pays the tickets and is released immediately
+        /// (same as a warden releasing them). Returns false (and voids the request) when the
+        /// requirements are no longer met, e.g. the balance dropped since the request.
+        /// </summary>
+        public bool TryApproveRansom(Pawn p)
+        {
+            var d = DataFor(p);
+            if (!d.ransomRequested) return false;
+            if (!CanRansom(p))
+            {
+                d.ransomRequested = false;
+                d.ransomDeniedUntilTick = -1;
+                Messages.Message("PPTE2_RansomNoLongerEligible".Translate(p.LabelShortCap),
+                    p, MessageTypeDefOf.RejectInput);
+                return false;
+            }
+
+            float cost = EffectiveRansomCost(p);
+            TryPay(p, cost);
+            d.ransomRequested = false;
+            d.ransomDeniedUntilTick = -1;
+            prisonStartTick.Remove(p.thingIDNumber);
+            GenGuest.PrisonerRelease(p); // automatic release
+            Messages.Message("PPTE2_RansomApproved".Translate(
+                p.LabelShortCap, cost.ToString("0.##"), PPTEName.Ticket), p, MessageTypeDefOf.PositiveEvent);
+            return true;
+        }
+
+        /// <summary>Player rejects the request; the prisoner may ask again after a cooldown.</summary>
+        public void RejectRansom(Pawn p)
+        {
+            var d = DataFor(p);
+            d.ransomRequested = false;
+            d.ransomDeniedUntilTick = Find.TickManager.TicksGame + RansomTicker.DenyCooldownTicks;
+            Messages.Message("PPTE2_RansomRejected".Translate(p.LabelShortCap),
+                p, MessageTypeDefOf.NeutralEvent);
+        }
+
         public override void ExposeData()
         {
             base.ExposeData();
@@ -133,6 +253,8 @@ namespace PrisonersPayToEat2
             if (data == null) data = new Dictionary<int, PrisonerTicketData>();
             Scribe_Collections.Look(ref workWageAccum, "workWageAccum", LookMode.Value, LookMode.Value);
             if (workWageAccum == null) workWageAccum = new Dictionary<int, float>();
+            Scribe_Collections.Look(ref prisonStartTick, "prisonStartTick", LookMode.Value, LookMode.Value);
+            if (prisonStartTick == null) prisonStartTick = new Dictionary<int, int>();
             // research contributions are transient; drop stale refs on load
             if (Scribe.mode == LoadSaveMode.LoadingVars)
                 researchContrib.Clear();
@@ -142,6 +264,7 @@ namespace PrisonersPayToEat2
         {
             base.GameComponentTick();
             PrisonLaborWageTicker.Tick();
+            RansomTicker.Tick();
         }
     }
 }

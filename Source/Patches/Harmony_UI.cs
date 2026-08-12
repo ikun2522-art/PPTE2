@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
-using UnityEngine;
 using Verse;
 
 namespace PrisonersPayToEat2
 {
     /// <summary>
-    /// Appends meal-ticket controls to a selected colony prisoner's gizmo row:
-    /// give tickets, take tickets, configure prisoner, and a read-only balance card.
+    /// Adds a single meal-ticket control to a selected colony prisoner's gizmo row: one button that
+    /// opens the prisoner ticket menu (give/take tickets, individual settings, ransom approval).
+    /// All mod-specific gizmos live inside that menu instead of cluttering the gizmo row.
     /// </summary>
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.GetGizmos))]
     public static class Harmony_UI
@@ -20,12 +20,7 @@ namespace PrisonersPayToEat2
 
             if (!ShouldShow(__instance)) yield break;
 
-            float balance = PrisonersPayToEat2Manager.Current?.Balance(__instance) ?? 0f;
-
-            yield return GiveTicketGizmo(__instance);
-            yield return TakeTicketGizmo(__instance, balance);
-            yield return PerPrisonerConfigGizmo(__instance);
-            yield return new Gizmo_TicketBalance(__instance);
+            yield return PrisonerMenuGizmo(__instance);
         }
 
         private static bool ShouldShow(Pawn p)
@@ -40,45 +35,18 @@ namespace PrisonersPayToEat2
             return false;
         }
 
-        private static Gizmo GiveTicketGizmo(Pawn p)
+        private static Gizmo PrisonerMenuGizmo(Pawn p)
         {
+            // mark the button when a ransom request awaits the player's decision
+            var d = PrisonersPayToEat2Manager.Current?.DataFor(p);
+            bool ransomPending = d != null && d.ransomRequested && PrisonersPayToEat2Mod.Settings.enableRansom;
             return new Command_Action
             {
-                defaultLabel = "PPTE2_GizmoGive".Translate(PPTEName.Ticket),
-                defaultDesc = "PPTE2_GizmoGiveDesc".Translate(PPTEName.Ticket),
-                icon = TexButton.Plus,
-                action = () => Find.WindowStack.Add(new Dialog_GiveTickets(p, true)),
-                groupKey = 8978101,
-            };
-        }
-
-        private static Gizmo TakeTicketGizmo(Pawn p, float balance)
-        {
-            var gizmo = new Command_Action
-            {
-                defaultLabel = "PPTE2_GizmoTake".Translate(PPTEName.Ticket),
-                defaultDesc = "PPTE2_GizmoTakeDesc".Translate(PPTEName.Ticket),
-                icon = TexButton.Minus,
-                action = () => Find.WindowStack.Add(new Dialog_GiveTickets(p, false)),
-                groupKey = 8978102,
-            };
-            if (balance <= 0)
-            {
-                gizmo.Disabled = true;
-                gizmo.disabledReason = "PPTE2_NoTicketsToTake".Translate(PPTEName.Ticket);
-            }
-            return gizmo;
-        }
-
-        private static Gizmo PerPrisonerConfigGizmo(Pawn p)
-        {
-            return new Command_Action
-            {
-                defaultLabel = "PPTE2_GizmoConfig".Translate(),
-                defaultDesc = "PPTE2_GizmoConfigDesc".Translate(),
-                icon = TexButton.Rename,
-                action = () => Find.WindowStack.Add(new Window_PrisonerConfig(p)),
-                groupKey = 8978103,
+                defaultLabel = "PPTE2_GizmoMenu".Translate() + (ransomPending ? " (!)" : ""),
+                defaultDesc = "PPTE2_GizmoMenuDesc".Translate(),
+                icon = TexButton.Info,
+                action = () => Find.WindowStack.Add(new Window_PrisonerMenu(p)),
+                groupKey = 8978100,
             };
         }
     }

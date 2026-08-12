@@ -40,19 +40,14 @@
   <PPTE2_BalanceCardTitleFormat>{0} balance</PPTE2_BalanceCardTitleFormat>
   <PPTE2_TicketNameLabel>Ticket name:</PPTE2_TicketNameLabel>
   <PPTE2_TicketNamePreview>Current ticket name: {0}</PPTE2_TicketNamePreview>
+  <PPTE2_EnableRansom>Enable prisoner ransom</PPTE2_EnableRansom>
+  <PPTE2_RansomTicketCost>Tickets required for ransom: {0}</PPTE2_RansomTicketCost>
+  <PPTE2_RansomMinDays>Minimum days imprisoned: {0}</PPTE2_RansomMinDays>
+  <PPTE2_RansomHint>Once a prisoner has saved up enough tickets and served enough time, they may occasionally ask to buy their freedom. You must approve for them to be released automatically — their tickets are used as payment. Per-prisoner overrides are available in the prisoner config window.</PPTE2_RansomHint>
 
   <!-- Inspect / Gizmo -->
-  <PPTE2_GizmoGive>Give {0}</PPTE2_GizmoGive>
-  <PPTE2_GizmoGiveDesc>Manually give {0}(s) to this prisoner.</PPTE2_GizmoGiveDesc>
-  <PPTE2_GizmoTake>Take {0}</PPTE2_GizmoTake>
-  <PPTE2_GizmoTakeDesc>Manually take {0}(s) from this prisoner.</PPTE2_GizmoTakeDesc>
-  <PPTE2_GizmoConfig>Configure prisoner</PPTE2_GizmoConfig>
-  <PPTE2_GizmoConfigDesc>Adjust this prisoner's individual food price and wage multipliers.</PPTE2_GizmoConfigDesc>
-  <PPTE2_GizmoBalance>Tickets: {0}</PPTE2_GizmoBalance>
-  <PPTE2_GizmoBalanceDesc>This prisoner's current ticket balance.</PPTE2_GizmoBalanceDesc>
-  <PPTE2_BalanceCardUnit>tickets</PPTE2_BalanceCardUnit>
-  <PPTE2_BalanceDisplay>Meal tickets: {0}</PPTE2_BalanceDisplay>
-  <PPTE2_NoTicketsToTake>This prisoner has no {0}(s) to take.</PPTE2_NoTicketsToTake>
+  <PPTE2_GizmoMenu>Prisoner tickets</PPTE2_GizmoMenu>
+  <PPTE2_GizmoMenuDesc>Manage this prisoner's tickets (give/take), individual settings and ransom.</PPTE2_GizmoMenuDesc>
 
   <!-- Dialog_GiveTickets -->
   <PPTE2_GiveDialogTitle>Give {0}(s)</PPTE2_GiveDialogTitle>
@@ -72,9 +67,36 @@
   <PPTE2_Enabled>enabled</PPTE2_Enabled>
   <PPTE2_Disabled>disabled</PPTE2_Disabled>
   <PPTE2_ResetDefaults>Reset to defaults</PPTE2_ResetDefaults>
+  <PPTE2_RansomOverrideTitle>Ransom (0 = follow global)</PPTE2_RansomOverrideTitle>
+  <PPTE2_RansomTicketOverrideLabel>Tickets required:</PPTE2_RansomTicketOverrideLabel>
+  <PPTE2_RansomMinDaysOverrideLabel>Minimum days imprisoned:</PPTE2_RansomMinDaysOverrideLabel>
+  <PPTE2_RansomEffective>Currently in effect: {0} tickets / {1} days</PPTE2_RansomEffective>
+
+  <!-- Window_PrisonerMenu -->
+  <PPTE2_MenuGive>Give tickets</PPTE2_MenuGive>
+  <PPTE2_MenuTake>Take tickets</PPTE2_MenuTake>
+  <PPTE2_MenuConfig>Configure</PPTE2_MenuConfig>
+  <PPTE2_RansomTitle>Ransom</PPTE2_RansomTitle>
+  <PPTE2_RansomDisabledGlobal>Ransom is disabled (enable it in MOD settings).</PPTE2_RansomDisabledGlobal>
+  <PPTE2_RansomNeedTickets>Required tickets: {0} (has {1})</PPTE2_RansomNeedTickets>
+  <PPTE2_RansomNeedTime>Minimum imprisonment: {0} days (imprisoned {1} days)</PPTE2_RansomNeedTime>
+  <PPTE2_RansomRequestPending>{0} offers {1} {2}(s) to buy freedom — awaiting your approval!</PPTE2_RansomRequestPending>
+  <PPTE2_RansomApprove>Approve ransom</PPTE2_RansomApprove>
+  <PPTE2_RansomReject>Reject</PPTE2_RansomReject>
+  <PPTE2_RansomEligibleWait>Requirements met — waiting for the prisoner to ask…</PPTE2_RansomEligibleWait>
+  <PPTE2_RansomNotEligible>Requirements not met yet.</PPTE2_RansomNotEligible>
+  <PPTE2_RansomCooldown>Request rejected — wait {0} more days.</PPTE2_RansomCooldown>
+
+  <!-- Health tab -->
+  <PPTE2_HealthTabBalance>{1} balance: {0} {2}</PPTE2_HealthTabBalance>
+  <PPTE2_HealthTabRansomPending>Ransom approval pending!</PPTE2_HealthTabRansomPending>
 
   <!-- Messages -->
   <PPTE2_NoTickets>{0} lacks {1} {2}(s) (had {3}).</PPTE2_NoTickets>
   <PPTE2_OrganSold>{0} sold a {1} for {2} {3}(s).</PPTE2_OrganSold>
+  <PPTE2_RansomRequestMsg>{0} offers {1} {2}(s) to buy freedom and awaits your approval.</PPTE2_RansomRequestMsg>
+  <PPTE2_RansomApproved>{0} paid {1} {2}(s) and was released!</PPTE2_RansomApproved>
+  <PPTE2_RansomRejected>You rejected {0}'s ransom request.</PPTE2_RansomRejected>
+  <PPTE2_RansomNoLongerEligible>{0} no longer meets the ransom requirements; request voided.</PPTE2_RansomNoLongerEligible>
 
 </LanguageData>

@@ -16,6 +16,12 @@ namespace PrisonersPayToEat2
         public bool ignoreDuringRiot = true;
         public bool logVerbose = false;
 
+        // Ransom (赎身): a prisoner with enough tickets (and enough time served) may ask to buy
+        // freedom; the player approves, the prisoner pays, and is released automatically.
+        public bool enableRansom = true;
+        public float ransomTicketCost = 1000f;
+        public float ransomMinDays = 0f;
+
         // Custom display name for the meal ticket currency (empty = default localized name).
         public string customTicketName = "";
 
@@ -42,6 +48,9 @@ namespace PrisonersPayToEat2
             Scribe_Values.Look(ref startingTicketsPerPrisoner, "startingTicketsPerPrisoner", 3);
             Scribe_Values.Look(ref ignoreDuringRiot, "ignoreDuringRiot", true);
             Scribe_Values.Look(ref logVerbose, "logVerbose", false);
+            Scribe_Values.Look(ref enableRansom, "enableRansom", true);
+            Scribe_Values.Look(ref ransomTicketCost, "ransomTicketCost", 1000f);
+            Scribe_Values.Look(ref ransomMinDays, "ransomMinDays", 0f);
             Scribe_Values.Look(ref customTicketName, "customTicketName", "");
             Scribe_Collections.Look(ref workTypeWages, "workTypeWages", LookMode.Value, LookMode.Value);
             if (workTypeWages == null) workTypeWages = new Dictionary<string, float>();
@@ -110,8 +119,8 @@ namespace PrisonersPayToEat2
 
         private void DrawGeneralTab(Rect rect)
         {
-            // Content height: 5 sliders * 54 + 3 checkboxes * 30 + padding = ~380
-            var view = new Rect(0f, 0f, rect.width - 20f, 400f);
+            // Content height: 6 sliders * 54 + 4 checkboxes * 30 + ticket name + ransom hint = ~540
+            var view = new Rect(0f, 0f, rect.width - 20f, 540f);
             Widgets.BeginScrollView(rect, ref _generalScroll, view);
 
             float colW = (view.width - 40f) / 2f;
@@ -121,6 +130,7 @@ namespace PrisonersPayToEat2
             DrawCheckboxRow(0f, ref ly, "PPTE2_EnableOrganHarvest".Translate(), ref enableOrganHarvest);
             DrawCheckboxRow(0f, ref ly, "PPTE2_IgnoreRiot".Translate(), ref ignoreDuringRiot);
             DrawCheckboxRow(0f, ref ly, "PPTE2_VerboseLog".Translate(), ref logVerbose);
+            DrawCheckboxRow(0f, ref ly, "PPTE2_EnableRansom".Translate(), ref enableRansom);
 
             // ticket name editor
             Widgets.Label(new Rect(0f, ly + 2f, 200f, 24f), "PPTE2_TicketNameLabel".Translate());
@@ -142,6 +152,11 @@ namespace PrisonersPayToEat2
                 ly += 54f;
             }
 
+            // ransom hint under the left column
+            GUI.color = new Color(0.7f, 0.7f, 0.65f);
+            Widgets.Label(new Rect(0f, ly, colW, 90f), "PPTE2_RansomHint".Translate());
+            GUI.color = Color.white;
+
             // right column: sliders
             float rx = colW + 40f;
             float ry = 4f;
@@ -157,6 +172,10 @@ namespace PrisonersPayToEat2
             DrawSliderRow(rx, ref ry, colW, "PPTE2_StartingTickets".Translate(startingTicketsPerPrisoner),
                 ref startTickets, 0f, 50f);
             startingTicketsPerPrisoner = (int)startTickets;
+            DrawSliderRow(rx, ref ry, colW, "PPTE2_RansomTicketCost".Translate(ransomTicketCost.ToString("0.##")),
+                ref ransomTicketCost, 10f, 5000f);
+            DrawSliderRow(rx, ref ry, colW, "PPTE2_RansomMinDays".Translate(ransomMinDays.ToString("0.#")),
+                ref ransomMinDays, 0f, 60f);
 
             Widgets.EndScrollView();
         }

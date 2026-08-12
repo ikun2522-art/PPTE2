@@ -40,19 +40,14 @@
   <PPTE2_BalanceCardTitleFormat>{0}余额</PPTE2_BalanceCardTitleFormat>
   <PPTE2_TicketNameLabel>饭票名称：</PPTE2_TicketNameLabel>
   <PPTE2_TicketNamePreview>当前饭票名称：{0}</PPTE2_TicketNamePreview>
+  <PPTE2_EnableRansom>启用囚犯赎身</PPTE2_EnableRansom>
+  <PPTE2_RansomTicketCost>赎身所需饭票：{0}</PPTE2_RansomTicketCost>
+  <PPTE2_RansomMinDays>最短囚禁天数：{0}</PPTE2_RansomMinDays>
+  <PPTE2_RansomHint>囚犯攒够饭票且囚禁足够时间后，有一定概率提出赎身请求；需玩家同意后才自动释放，并扣除对应饭票。可在「配置囚犯」窗口为单个囚犯单独设置。</PPTE2_RansomHint>
 
   <!-- 选中 / Gizmo -->
-  <PPTE2_GizmoGive>发放{0}</PPTE2_GizmoGive>
-  <PPTE2_GizmoGiveDesc>手动给该囚犯发放{0}。</PPTE2_GizmoGiveDesc>
-  <PPTE2_GizmoTake>扣除{0}</PPTE2_GizmoTake>
-  <PPTE2_GizmoTakeDesc>手动从该囚犯扣除{0}。</PPTE2_GizmoTakeDesc>
-  <PPTE2_GizmoConfig>配置该囚犯</PPTE2_GizmoConfig>
-  <PPTE2_GizmoConfigDesc>调整该囚犯的个人食物价格与工资倍率。</PPTE2_GizmoConfigDesc>
-  <PPTE2_GizmoBalance>饭票：{0}</PPTE2_GizmoBalance>
-  <PPTE2_GizmoBalanceDesc>该囚犯当前的饭票余额。</PPTE2_GizmoBalanceDesc>
-  <PPTE2_BalanceCardUnit>张</PPTE2_BalanceCardUnit>
-  <PPTE2_BalanceDisplay>饭票余额：{0}</PPTE2_BalanceDisplay>
-  <PPTE2_NoTicketsToTake>该囚犯没有{0}可扣除。</PPTE2_NoTicketsToTake>
+  <PPTE2_GizmoMenu>囚犯饭票</PPTE2_GizmoMenu>
+  <PPTE2_GizmoMenuDesc>管理该囚犯的饭票（发放/扣除）、个人配置与赎身。</PPTE2_GizmoMenuDesc>
 
   <!-- Dialog_GiveTickets -->
   <PPTE2_GiveDialogTitle>发放{0}</PPTE2_GiveDialogTitle>
@@ -72,9 +67,36 @@
   <PPTE2_Enabled>已启用</PPTE2_Enabled>
   <PPTE2_Disabled>已禁用</PPTE2_Disabled>
   <PPTE2_ResetDefaults>恢复默认值</PPTE2_ResetDefaults>
+  <PPTE2_RansomOverrideTitle>赎身设置（0 = 跟随全局）</PPTE2_RansomOverrideTitle>
+  <PPTE2_RansomTicketOverrideLabel>赎身所需饭票：</PPTE2_RansomTicketOverrideLabel>
+  <PPTE2_RansomMinDaysOverrideLabel>最短囚禁天数：</PPTE2_RansomMinDaysOverrideLabel>
+  <PPTE2_RansomEffective>当前生效：{0} 张饭票 / {1} 天</PPTE2_RansomEffective>
+
+  <!-- Window_PrisonerMenu -->
+  <PPTE2_MenuGive>发放饭票</PPTE2_MenuGive>
+  <PPTE2_MenuTake>扣除饭票</PPTE2_MenuTake>
+  <PPTE2_MenuConfig>配置囚犯</PPTE2_MenuConfig>
+  <PPTE2_RansomTitle>赎身</PPTE2_RansomTitle>
+  <PPTE2_RansomDisabledGlobal>赎身功能已关闭（可在 MOD 设置中开启）。</PPTE2_RansomDisabledGlobal>
+  <PPTE2_RansomNeedTickets>赎身所需：{0} 张（当前 {1} 张）</PPTE2_RansomNeedTickets>
+  <PPTE2_RansomNeedTime>最短囚禁：{0} 天（已囚禁 {1} 天）</PPTE2_RansomNeedTime>
+  <PPTE2_RansomRequestPending>{0} 请求用 {1} 张{2}赎身，等待你的许可！</PPTE2_RansomRequestPending>
+  <PPTE2_RansomApprove>同意赎身</PPTE2_RansomApprove>
+  <PPTE2_RansomReject>拒绝请求</PPTE2_RansomReject>
+  <PPTE2_RansomEligibleWait>已满足赎身条件，等待囚犯提出请求…</PPTE2_RansomEligibleWait>
+  <PPTE2_RansomNotEligible>尚未满足赎身条件。</PPTE2_RansomNotEligible>
+  <PPTE2_RansomCooldown>请求被拒绝，需等待 {0} 天才能再次提出。</PPTE2_RansomCooldown>
+
+  <!-- 健康标签页 -->
+  <PPTE2_HealthTabBalance>{1}余额：{0} {2}</PPTE2_HealthTabBalance>
+  <PPTE2_HealthTabRansomPending>赎身请求待批准！</PPTE2_HealthTabRansomPending>
 
   <!-- 消息 -->
   <PPTE2_NoTickets>{0} 缺少 {1} 个{2}（仅有 {3} 个）。</PPTE2_NoTickets>
   <PPTE2_OrganSold>{0} 出卖了一颗 {1}，换得 {2} 个{3}。</PPTE2_OrganSold>
+  <PPTE2_RansomRequestMsg>{0} 表示愿意用 {1} 张{2}赎身，等待你的许可。</PPTE2_RansomRequestMsg>
+  <PPTE2_RansomApproved>{0} 用 {1} 张{2}成功赎身，已获释放！</PPTE2_RansomApproved>
+  <PPTE2_RansomRejected>你拒绝了 {0} 的赎身请求。</PPTE2_RansomRejected>
+  <PPTE2_RansomNoLongerEligible>{0} 已不满足赎身条件，请求失效。</PPTE2_RansomNoLongerEligible>
 
 </LanguageData>

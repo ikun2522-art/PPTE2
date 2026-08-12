@@ -45,12 +45,24 @@ Prisoners can no longer freeload off your colony's food supply! Every meal a pri
 - Harvested organs spawn as items; each organ sells only once.
 - Can be disabled globally in settings, or overridden per prisoner.
 
+### 🔓 囚犯赎身 / Prisoner Ransom
+- 囚犯攒够一定数量的饭票（默认 **1000**，可配置）并满足最短囚禁时间后，有一定概率提出**赎身请求**
+- 请求需要**玩家同意**：同意后自动扣除对应饭票并**自动释放**囚犯；拒绝后需等待一段时间才能再次请求
+- 全局设置：赎身所需饭票数、最短囚禁天数（自成为囚犯起算）
+- 单个囚犯可单独覆盖所需饭票数与最短囚禁天数（配置囚犯窗口，0 = 跟随全局）
+- Once a prisoner has saved up enough tickets (default **1000**, configurable) and served the minimum imprisonment time, they may occasionally **ask to buy their freedom**
+- The request needs **your approval**: approving automatically deducts the tickets and **releases the prisoner**; rejecting starts a cooldown before they may ask again
+- Global settings: required ticket count and minimum imprisonment time (since capture)
+- Per-prisoner override for both values (prisoner config window, 0 = follow global)
+
 ### 🎛️ 玩家管理 / Player Controls
-- 选中囚犯：**发放饭票** / **扣除饭票** / **配置囚犯** 按钮 + 饭票余额卡片
-- 每个囚犯单独配置：个人食物倍率、个人工资倍率、计费方式（按时/按量）、是否允许贩卖器官
+- 选中囚犯：一个**「囚犯饭票」按钮**整合全部操作——饭票余额、发放/扣除饭票、配置囚犯、赎身批准
+- 囚犯的**健康标签页**顶部直接显示饭票余额，赎身请求待批准时高亮提示
+- 每个囚犯单独配置：个人食物倍率、个人工资倍率、计费方式（按时/按量）、是否允许贩卖器官、赎身所需饭票与最短囚禁天数
 - 手动发放/扣除支持小数
-- Selected prisoner gizmos: give tickets / take tickets / configure / live balance card.
-- Per-prisoner settings: food multiplier, wage multiplier, billing mode (hourly/piece-rate), organ-sale permission.
+- One **"Prisoner tickets" button** on a selected prisoner gathers every control — balance, give/take tickets, configure, ransom approval.
+- The prisoner's **health tab** shows the ticket balance at the top, with a highlight when a ransom request awaits approval.
+- Per-prisoner settings: food multiplier, wage multiplier, billing mode (hourly/piece-rate), organ-sale permission, ransom ticket count & minimum imprisonment time.
 - Manual give/take supports decimals.
 
 ### ⚙️ 其他 / Extras
