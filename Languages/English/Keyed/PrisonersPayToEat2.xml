@@ -34,6 +34,29 @@
   <PPTE2_SilverRate>Tickets per silver of value: {0}</PPTE2_SilverRate>
   <PPTE2_StartingTickets>Starting tickets per prisoner: {0}</PPTE2_StartingTickets>
   <PPTE2_IgnoreRiot>Ignore ticket check during mental break / prison break</PPTE2_IgnoreRiot>
+  <PPTE2_AllowMealDebt>Allow meal credit (balance may go negative; wages repay the debt first)</PPTE2_AllowMealDebt>
+  <PPTE2_TabSocial>Prisoner social</PPTE2_TabSocial>
+  <PPTE2_EnableLoans>Enable loans</PPTE2_EnableLoans>
+  <PPTE2_EnableRobbery>Enable robbery</PPTE2_EnableRobbery>
+  <PPTE2_EnableBegging>Enable begging</PPTE2_EnableBegging>
+  <PPTE2_AllowPlayerLoans>Allow prisoners to borrow from the player (approve each request)</PPTE2_AllowPlayerLoans>
+  <PPTE2_BadDebtPenalty>Bad debt hurts the lender's mood</PPTE2_BadDebtPenalty>
+  <PPTE2_LoanTriggerBalance>Loan trigger balance (below this they borrow/beg/rob): {0}</PPTE2_LoanTriggerBalance>
+  <PPTE2_LoanCooldown>Loan cooldown (days): {0}</PPTE2_LoanCooldown>
+  <PPTE2_MaxLoanAmount>Max loan amount: {0}</PPTE2_MaxLoanAmount>
+  <PPTE2_LoanInterestBase>Base interest (0 opinion): {0}</PPTE2_LoanInterestBase>
+  <PPTE2_LoanInterestPerOpinion>Interest reduction per opinion point (%): {0}</PPTE2_LoanInterestPerOpinion>
+  <PPTE2_LoanInterestMin>Min interest: {0}</PPTE2_LoanInterestMin>
+  <PPTE2_LoanInterestMax>Max interest: {0}</PPTE2_LoanInterestMax>
+  <PPTE2_RobberyCooldown>Robbery cooldown (days): {0}</PPTE2_RobberyCooldown>
+  <PPTE2_RobberyHungerThreshold>Robbery hunger threshold (food below this): {0}</PPTE2_RobberyHungerThreshold>
+  <PPTE2_RobberyTakePercent>Robbery take: {0}</PPTE2_RobberyTakePercent>
+  <PPTE2_BeggingCooldown>Begging cooldown (days): {0}</PPTE2_BeggingCooldown>
+  <PPTE2_BeggingAmountMin>Begging min tickets: {0}</PPTE2_BeggingAmountMin>
+  <PPTE2_BeggingAmountMax>Begging max tickets: {0}</PPTE2_BeggingAmountMax>
+  <PPTE2_BeggingChanceBase>Begging base chance: {0}</PPTE2_BeggingChanceBase>
+  <PPTE2_BeggingChancePerOpinion>Begging chance per opinion point (%): {0}</PPTE2_BeggingChancePerOpinion>
+  <PPTE2_SocialHint>Prisoners start these behaviors on their own when they can't afford food. Robbery is a real melee fight — it can be lethal! Per-prisoner toggles are in the prisoner config window.</PPTE2_SocialHint>
   <PPTE2_VerboseLog>Verbose logging</PPTE2_VerboseLog>
   <PPTE2_TicketDefaultName>meal ticket</PPTE2_TicketDefaultName>
   <PPTE2_TicketDefaultUnit>tickets</PPTE2_TicketDefaultUnit>
@@ -67,6 +90,13 @@
   <PPTE2_Enabled>enabled</PPTE2_Enabled>
   <PPTE2_Disabled>disabled</PPTE2_Disabled>
   <PPTE2_ResetDefaults>Reset to defaults</PPTE2_ResetDefaults>
+  <PPTE2_SocialSettingsTitle>Social behaviors</PPTE2_SocialSettingsTitle>
+  <PPTE2_FeatureLoan>Loans</PPTE2_FeatureLoan>
+  <PPTE2_FeatureRobbery>Robbery</PPTE2_FeatureRobbery>
+  <PPTE2_FeatureBegging>Begging</PPTE2_FeatureBegging>
+  <PPTE2_SocialFollow>Follow global</PPTE2_SocialFollow>
+  <PPTE2_SocialAllow>Allow</PPTE2_SocialAllow>
+  <PPTE2_SocialDeny>Deny</PPTE2_SocialDeny>
   <PPTE2_RansomOverrideTitle>Ransom (0 = follow global)</PPTE2_RansomOverrideTitle>
   <PPTE2_RansomTicketOverrideLabel>Tickets required:</PPTE2_RansomTicketOverrideLabel>
   <PPTE2_RansomMinDaysOverrideLabel>Minimum days imprisoned:</PPTE2_RansomMinDaysOverrideLabel>
@@ -89,10 +119,27 @@
 
   <!-- Health status (Hediff) -->
   <PPTE2_HediffLabel>{1}: {0}</PPTE2_HediffLabel>
+  <PPTE2_HediffLabel_Debt>{1} debt: {0} {2}</PPTE2_HediffLabel_Debt>
   <PPTE2_HediffTip_Balance>{1} balance: {0} {2}</PPTE2_HediffTip_Balance>
+  <PPTE2_HediffTip_Debt>Owes {0} {2} of {1}. Wages and other income repay the debt first.</PPTE2_HediffTip_Debt>
 
   <!-- Messages -->
-  <PPTE2_NoTickets>{0} lacks {1} {2}(s) (had {3}).</PPTE2_NoTickets>
+  <PPTE2_MealOnCredit>{0} ate {1} on credit and now owes {2} {3}(s). Wages and other income will repay the debt first.</PPTE2_MealOnCredit>
+  <PPTE2_NoTicketsBlocked>{0} couldn't eat: needs {1} {2}(s), only has {3}.</PPTE2_NoTicketsBlocked>
+  <PPTE2_LoanMade>{0} borrowed {2} {3}(s) from {1} (interest {4}%).</PPTE2_LoanMade>
+  <PPTE2_LoanRepaidMsg>{0} repaid the loan of {2} {3}(s) borrowed from {1}.</PPTE2_LoanRepaidMsg>
+  <PPTE2_LoanDefaultedMsg>{0}'s loan went bad — {1} lost {2} {3}(s).</PPTE2_LoanDefaultedMsg>
+  <PPTE2_PlayerLoanTitle>Loan request</PPTE2_PlayerLoanTitle>
+  <PPTE2_PlayerLoanBody>{0} wants to borrow {1} {2}(s) from you.</PPTE2_PlayerLoanBody>
+  <PPTE2_PlayerLoanApprove>Lend</PPTE2_PlayerLoanApprove>
+  <PPTE2_PlayerLoanReject>Reject</PPTE2_PlayerLoanReject>
+  <PPTE2_PlayerLoanApproved>You lent {0} {1} {2}(s).</PPTE2_PlayerLoanApproved>
+  <PPTE2_PlayerLoanRejected>You rejected {0}'s loan request.</PPTE2_PlayerLoanRejected>
+  <PPTE2_BegSuccess>{0} begged {2} {3}(s) from {1}.</PPTE2_BegSuccess>
+  <PPTE2_RobberySuccessMsg>{0} overpowered {1} and stole {2} {3}(s)!</PPTE2_RobberySuccessMsg>
+  <PPTE2_RobberyFailedMsg>{0}'s robbery of {1} failed and {0} got beaten up.</PPTE2_RobberyFailedMsg>
+  <PPTE2_OwesLabel>Outstanding loan: {0} {1}(s)</PPTE2_OwesLabel>
+  <PPTE2_RansomHasDebt>Cannot ransom with an outstanding loan.</PPTE2_RansomHasDebt>
   <PPTE2_OrganSold>{0} sold a {1} for {2} {3}(s).</PPTE2_OrganSold>
   <PPTE2_RansomRequestMsg>{0} offers {1} {2}(s) to buy freedom and awaits your approval.</PPTE2_RansomRequestMsg>
   <PPTE2_RansomApproved>{0} paid {1} {2}(s) and was released!</PPTE2_RansomApproved>

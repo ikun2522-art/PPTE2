@@ -6,6 +6,35 @@ using RimWorld;
 
 namespace PrisonersPayToEat2
 {
+    /// <summary>囚犯社会行为类型（借款/抢劫/乞讨）。</summary>
+    public enum SocialFeatureKind { Loan, Robbery, Begging }
+
+    /// <summary>每囚犯对某社会行为的设置：跟随全局 / 强制允许 / 强制禁止。</summary>
+    public enum PPTE2SocialSetting { Follow, Allow, Deny }
+
+    /// <summary>
+    /// 一条未还清的囚犯间借款记录。还款由借方收入自动触发（见
+    /// <see cref="PrisonersPayToEat2Manager.AddTickets"/>），还清后从列表移除；
+    /// 借方被释放/死亡/越狱则记为坏账（贷方心情减益）。
+    /// </summary>
+    public class LoanRecord : IExposable
+    {
+        public int borrowerId;
+        public int lenderId;
+        public float principal;   // 原始借款额（展示用）
+        public float owed;        // 剩余应还（本金+利息）
+        public int createdTick;
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref borrowerId, "borrowerId", 0);
+            Scribe_Values.Look(ref lenderId, "lenderId", 0);
+            Scribe_Values.Look(ref principal, "principal", 0f);
+            Scribe_Values.Look(ref owed, "owed", 0f);
+            Scribe_Values.Look(ref createdTick, "createdTick", 0);
+        }
+    }
+
     /// <summary>
     /// Per-prisoner state. Stored in <see cref="PrisonersPayToEat2Manager"/> keyed by Pawn.thingIDNumber.
     /// </summary>
@@ -23,6 +52,9 @@ namespace PrisonersPayToEat2
         public float ransomMinDaysOverride;   // minimum days imprisoned; 0 = follow global setting
         public bool ransomRequested;          // prisoner asked to buy freedom, awaiting player decision
         public int ransomDeniedUntilTick = -1; // rejection cooldown (TicksGame); -1 = none
+        public PPTE2SocialSetting loanSetting = PPTE2SocialSetting.Follow;     // 借款
+        public PPTE2SocialSetting robberySetting = PPTE2SocialSetting.Follow;  // 抢劫
+        public PPTE2SocialSetting beggingSetting = PPTE2SocialSetting.Follow;  // 乞讨
 
         public void ExposeData()
         {
@@ -38,6 +70,9 @@ namespace PrisonersPayToEat2
             Scribe_Values.Look(ref ransomMinDaysOverride, "ransomMinDaysOverride", 0f);
             Scribe_Values.Look(ref ransomRequested, "ransomRequested", false);
             Scribe_Values.Look(ref ransomDeniedUntilTick, "ransomDeniedUntilTick", -1);
+            Scribe_Values.Look(ref loanSetting, "loanSetting", PPTE2SocialSetting.Follow);
+            Scribe_Values.Look(ref robberySetting, "robberySetting", PPTE2SocialSetting.Follow);
+            Scribe_Values.Look(ref beggingSetting, "beggingSetting", PPTE2SocialSetting.Follow);
         }
     }
 
@@ -63,6 +98,9 @@ namespace PrisonersPayToEat2
         // Tick (TicksGame) at which each pawn became a prisoner of the colony, keyed by
         // pawn.thingIDNumber. Used for the ransom minimum-imprisonment-time requirement.
         private Dictionary<int, int> prisonStartTick = new Dictionary<int, int>();
+
+        // 未还清的囚犯间借款（借方还清后移除；坏账由 PrisonerSocialTicker 清扫）。
+        public List<LoanRecord> loans = new List<LoanRecord>();
 
         // Meal-ticket health-status hediff maintenance (see EnsureTicketHediffs).
         private static HediffDef ticketHediffDef;
@@ -91,7 +129,55 @@ namespace PrisonersPayToEat2
             if (amount == 0f) return;
             var d = DataFor(p);
             d.ticketBalance += amount;
-            if (d.ticketBalance < 0f) d.ticketBalance = 0f;
+            // 赊账开启时允许余额为负（欠款由之后工资/卖器官等收入自动优先偿还，
+            // 因为收入只是加到余额上，负数先被填平）；关闭时保持旧行为：余额不低于 0。
+            if (d.ticketBalance < 0f)
+            {
+                if (!PrisonersPayToEat2Mod.Settings.allowMealDebt)
+                    d.ticketBalance = 0f;
+                return; // 赊账欠款还没填平，先不还借款
+            }
+            // 余额为正且填平了赊账欠款后，剩余部分优先偿还囚犯间借款
+            RepayLoans(p, d);
+        }
+
+        /// <summary>
+        /// 用借方余额中的正数部分自动偿还借款：还给贷方，直到还清。
+        /// 借方收入（工资/卖器官/乞讨/玩家发放）都会经由 <see cref="AddTickets"/> 走到这里。
+        /// </summary>
+        private void RepayLoans(Pawn borrower, PrisonerTicketData d)
+        {
+            if (loans.Count == 0 || d.ticketBalance <= 0f) return;
+            for (int i = loans.Count - 1; i >= 0; i--)
+            {
+                var loan = loans[i];
+                if (loan.borrowerId != borrower.thingIDNumber) continue;
+                if (loan.owed <= 0f) { loans.RemoveAt(i); continue; }
+                if (d.ticketBalance <= 0f) break;
+
+                float pay = Mathf.Min(loan.owed, d.ticketBalance);
+                d.ticketBalance -= pay;
+                loan.owed -= pay;
+                var lender = FindPawnById(loan.lenderId);
+                if (lender != null)
+                {
+                    DataFor(lender).ticketBalance += pay;
+                if (loan.owed <= 0f)
+                {
+                    // 还清：移除借方的"借款负担"，贷方获得"借款还清"（心情 +5）
+                    var loanTakenDef = GetThought("PPTE2_LoanTaken");
+                    if (loanTakenDef != null)
+                        borrower.needs?.mood?.thoughts?.memories?.RemoveMemoriesOfDef(loanTakenDef);
+                    var repaidThought = GetThought("PPTE2_LoanRepaid");
+                    if (repaidThought != null)
+                        lender.needs?.mood?.thoughts?.memories?.TryGainMemory(repaidThought, borrower);
+                    Messages.Message("PPTE2_LoanRepaidMsg".Translate(
+                            borrower.LabelShortCap, lender.LabelShortCap, loan.principal.ToString("0.##"), PPTEName.Ticket),
+                        borrower, MessageTypeDefOf.PositiveEvent);
+                }
+                }
+                if (loan.owed <= 0f) loans.RemoveAt(i);
+            }
         }
 
         public float Balance(Pawn p) => DataFor(p)?.ticketBalance ?? 0f;
@@ -114,6 +200,157 @@ namespace PrisonersPayToEat2
             if (d.ticketBalance < cost) return false;
             d.ticketBalance -= cost;
             return true;
+        }
+
+        /// <summary>
+        /// 赊账支付：无论余额多少都扣除，允许扣成负数（欠款）。
+        /// 仅在设置开启进食赊账时由 <see cref="Patches.Harmony_Ingest"/> 调用；
+        /// 欠款会由之后 <see cref="AddTickets"/> 的收入（工资/卖器官等）自动优先偿还。
+        /// </summary>
+        public void PayAllowDebt(Pawn p, float cost)
+        {
+            if (cost <= 0f) return;
+            DataFor(p).ticketBalance -= cost;
+        }
+
+        // ================= 囚犯社会行为（借款/抢劫/乞讨） =================
+
+        /// <summary>读取某个社会行为的每囚犯设置（跟随全局/允许/禁止）。</summary>
+        public PPTE2SocialSetting FeatureSetting(Pawn p, SocialFeatureKind kind)
+        {
+            var d = DataFor(p);
+            return kind switch
+            {
+                SocialFeatureKind.Loan => d.loanSetting,
+                SocialFeatureKind.Robbery => d.robberySetting,
+                _ => d.beggingSetting
+            };
+        }
+
+        /// <summary>设置某个社会行为的每囚犯覆盖。</summary>
+        public void SetFeatureSetting(Pawn p, SocialFeatureKind kind, PPTE2SocialSetting value)
+        {
+            var d = DataFor(p);
+            switch (kind)
+            {
+                case SocialFeatureKind.Loan: d.loanSetting = value; break;
+                case SocialFeatureKind.Robbery: d.robberySetting = value; break;
+                default: d.beggingSetting = value; break;
+            }
+        }
+
+        /// <summary>某囚犯是否被允许发起某社会行为（全局开关 × 每囚犯覆盖）。</summary>
+        public bool FeatureAllowed(Pawn p, SocialFeatureKind kind)
+        {
+            if (p == null) return false;
+            var s = PrisonersPayToEat2Mod.Settings;
+            bool global = kind switch
+            {
+                SocialFeatureKind.Loan => s.enableLoans,
+                SocialFeatureKind.Robbery => s.enableRobbery,
+                _ => s.enableBegging
+            };
+            if (!global) return false;
+            return FeatureSetting(p, kind) switch
+            {
+                PPTE2SocialSetting.Allow => true,
+                PPTE2SocialSetting.Deny => false,
+                _ => true
+            };
+        }
+
+        /// <summary>贷方对借方的借款利率：好感度越低利率越高（可配置公式，钳上下限）。</summary>
+        public float LoanInterestFor(Pawn lender, Pawn borrower)
+        {
+            var s = PrisonersPayToEat2Mod.Settings;
+            float opinion = lender?.relations?.OpinionOf(borrower) ?? 0f;
+            return Mathf.Clamp(s.loanInterestBase - opinion * s.loanInterestPerOpinion,
+                s.loanInterestMin, s.loanInterestMax);
+        }
+
+        /// <summary>生成一笔囚犯间借款：借方立即到账，贷方立即扣款，记录待还金额（本金+利息）。</summary>
+        public void MakeLoan(Pawn borrower, Pawn lender, float amount, float interest)
+        {
+            if (amount <= 0f || borrower == null || lender == null) return;
+            AddTickets(borrower, amount);
+            AddTickets(lender, -amount);
+            loans.Add(new LoanRecord
+            {
+                borrowerId = borrower.thingIDNumber,
+                lenderId = lender.thingIDNumber,
+                principal = amount,
+                owed = amount * (1f + interest),
+                createdTick = Find.TickManager.TicksGame
+            });
+            // 借款负担（心情 -4）；还清时由 RepayLoans 移除
+            var loanThought = GetThought("PPTE2_LoanTaken");
+            if (loanThought != null)
+                borrower.needs?.mood?.thoughts?.memories?.TryGainMemory(loanThought, lender);
+        }
+
+        /// <summary>该囚犯是否还有未还清的借款（有借款不能赎身，防止"借票赎身跑路"）。</summary>
+        public bool HasOutstandingLoans(Pawn p)
+        {
+            if (p == null) return false;
+            foreach (var loan in loans)
+                if (loan.borrowerId == p.thingIDNumber && loan.owed > 0.001f) return true;
+            return false;
+        }
+
+        /// <summary>该囚犯未还清的借款总额（UI 展示用）。</summary>
+        public float OutstandingOwed(Pawn p)
+        {
+            if (p == null) return 0f;
+            float sum = 0f;
+            foreach (var loan in loans)
+                if (loan.borrowerId == p.thingIDNumber) sum += loan.owed;
+            return sum;
+        }
+
+        /// <summary>玩家同意向囚犯借出饭票（无息、纯救济，不产生借贷记录）。</summary>
+        public void ApprovePlayerLoan(Pawn p)
+        {
+            var s = PrisonersPayToEat2Mod.Settings;
+            float amount = Mathf.Min(s.maxLoanAmount, Mathf.Max(1f, s.loanTriggerBalance - Balance(p)));
+            AddTickets(p, amount);
+            Messages.Message("PPTE2_PlayerLoanApproved".Translate(
+                    p.LabelShortCap, amount.ToString("0.##"), PPTEName.Ticket),
+                p, MessageTypeDefOf.NeutralEvent);
+        }
+
+        /// <summary>玩家拒绝向囚犯借出饭票。</summary>
+        public void RejectPlayerLoan(Pawn p)
+        {
+            Messages.Message("PPTE2_PlayerLoanRejected".Translate(p.LabelShortCap),
+                p, MessageTypeDefOf.NeutralEvent);
+        }
+
+        /// <summary>按 thingIDNumber 在所有已生成地图的存活单位中找囚犯（借贷双方查找用）。</summary>
+        public static Pawn FindPawnById(int id)
+        {
+            if (id <= 0) return null;
+            foreach (var map in Find.Maps)
+            {
+                if (map == null) continue;
+                foreach (var p in map.mapPawns.AllPawnsSpawned)
+                    if (p != null && p.thingIDNumber == id) return p;
+            }
+            return null;
+        }
+
+        // 社会行为思想的延迟缓存（defs 加载完成后才可取）
+        private static readonly Dictionary<string, ThoughtDef> thoughtCache = new Dictionary<string, ThoughtDef>();
+
+        /// <summary>获取本 mod 定义的社会行为思想（见 Defs/ThoughtDefs），找不到返回 null。</summary>
+        public static ThoughtDef GetThought(string defName)
+        {
+            if (defName == null) return null;
+            if (!thoughtCache.TryGetValue(defName, out var def))
+            {
+                def = DefDatabase<ThoughtDef>.GetNamedSilentFail(defName);
+                if (def != null) thoughtCache[defName] = def;
+            }
+            return def;
         }
 
         public float EffectiveFoodMultiplier(Pawn p) => DataFor(p)?.foodMultiplier ?? 1.0f;
@@ -174,6 +411,7 @@ namespace PrisonersPayToEat2
         {
             if (p == null || !p.IsPrisonerOfColony) return false;
             if (Balance(p) < EffectiveRansomCost(p)) return false;
+            if (HasOutstandingLoans(p)) return false; // 有未还清的借款不能赎身
             if (ImprisonedDays(p) < EffectiveRansomMinDays(p)) return false;
             return true;
         }
@@ -259,6 +497,8 @@ namespace PrisonersPayToEat2
             if (workWageAccum == null) workWageAccum = new Dictionary<int, float>();
             Scribe_Collections.Look(ref prisonStartTick, "prisonStartTick", LookMode.Value, LookMode.Value);
             if (prisonStartTick == null) prisonStartTick = new Dictionary<int, int>();
+            Scribe_Collections.Look(ref loans, "loans", LookMode.Value, LookMode.Deep);
+            if (loans == null) loans = new List<LoanRecord>();
             // research contributions are transient; drop stale refs on load
             if (Scribe.mode == LoadSaveMode.LoadingVars)
                 researchContrib.Clear();
@@ -269,6 +509,7 @@ namespace PrisonersPayToEat2
             base.GameComponentTick();
             PrisonLaborWageTicker.Tick();
             RansomTicker.Tick();
+            PrisonerSocialTicker.Tick();
             EnsureTicketHediffs();
         }
 

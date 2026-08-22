@@ -60,6 +60,7 @@
     <Compile Include="PrisonersPayToEat2Settings.cs" />
     <Compile Include="PrisonersPayToEat2Manager.cs" />
     <Compile Include="RansomTicker.cs" />
+    <Compile Include="PrisonerSocialTicker.cs" />
     <Compile Include="Hediff_MealTickets.cs" />
     <Compile Include="MarketPriceHelper.cs" />
     <Compile Include="PPTEName.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="UI\Window_PrisonerConfig.cs" />
     <Compile Include="UI\Window_PrisonerMenu.cs" />
     <Compile Include="UI\Dialog_GiveTickets.cs" />
+    <Compile Include="UI\Dialog_LoanRequest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -59,7 +59,8 @@ namespace PrisonersPayToEat2
             float before = mgr.Balance(_prisoner);
             mgr.AddTickets(_prisoner, signed);
             float after = mgr.Balance(_prisoner);
-            // when taking more than balance, AddTickets clamps at 0; report the actual deduction.
+            // 扣除超过余额时：赊账开启则余额可为负（欠款），关闭则钳制在 0；
+            // 这里用实际变动额报告，两种情况都准确。
             float actual = after - before;
 
             var msgKey = _give ? "PPTE2_GaveTickets" : "PPTE2_TookTickets";

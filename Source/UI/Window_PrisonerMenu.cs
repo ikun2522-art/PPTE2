@@ -39,6 +39,13 @@ namespace PrisonersPayToEat2
             var mgr = PrisonersPayToEat2Manager.Current;
             float balance = mgr.Balance(_prisoner);
             list.Label("PPTE2_BalanceLabel".Translate(balance.ToString("0.##"), PPTEName.Ticket));
+            float owed = mgr.OutstandingOwed(_prisoner);
+            if (owed > 0f)
+            {
+                GUI.color = new Color(1f, 0.7f, 0.6f);
+                list.Label("PPTE2_OwesLabel".Translate(owed.ToString("0.##"), PPTEName.Ticket));
+                GUI.color = Color.white;
+            }
 
             list.Gap(12f);
             float btnW = (inRect.width - 8f) / 3f;
@@ -78,6 +85,12 @@ namespace PrisonersPayToEat2
             GUI.color = new Color(0.75f, 0.75f, 0.7f);
             list.Label("PPTE2_RansomNeedTickets".Translate(cost.ToString("0.##"), balance.ToString("0.##")));
             list.Label("PPTE2_RansomNeedTime".Translate(minDays.ToString("0.#"), days.ToString("0.#")));
+            if (mgr.HasOutstandingLoans(_prisoner))
+            {
+                GUI.color = new Color(1f, 0.7f, 0.6f);
+                list.Label("PPTE2_RansomHasDebt".Translate());
+                GUI.color = Color.white;
+            }
             GUI.color = Color.white;
             list.Gap(8f);
 

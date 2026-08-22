@@ -34,6 +34,29 @@
   <PPTE2_SilverRate>每银币价值可换饭票数：{0}</PPTE2_SilverRate>
   <PPTE2_StartingTickets>新囚犯初始饭票数：{0}</PPTE2_StartingTickets>
   <PPTE2_IgnoreRiot>精神崩溃 / 越狱期间跳过饭票检查</PPTE2_IgnoreRiot>
+  <PPTE2_AllowMealDebt>允许赊账吃饭（余额可为负，工资等收入优先还债）</PPTE2_AllowMealDebt>
+  <PPTE2_TabSocial>囚犯社会</PPTE2_TabSocial>
+  <PPTE2_EnableLoans>启用借款</PPTE2_EnableLoans>
+  <PPTE2_EnableRobbery>启用抢劫</PPTE2_EnableRobbery>
+  <PPTE2_EnableBegging>启用乞讨</PPTE2_EnableBegging>
+  <PPTE2_AllowPlayerLoans>允许囚犯向玩家借款（逐笔弹窗批准）</PPTE2_AllowPlayerLoans>
+  <PPTE2_BadDebtPenalty>坏账时贷方心情减益</PPTE2_BadDebtPenalty>
+  <PPTE2_LoanTriggerBalance>借款触发余额（低于此值会借/讨/抢）：{0}</PPTE2_LoanTriggerBalance>
+  <PPTE2_LoanCooldown>借款冷却（天）：{0}</PPTE2_LoanCooldown>
+  <PPTE2_MaxLoanAmount>单次借款上限：{0}</PPTE2_MaxLoanAmount>
+  <PPTE2_LoanInterestBase>基准利率（好感度 0）：{0}</PPTE2_LoanInterestBase>
+  <PPTE2_LoanInterestPerOpinion>每点好感度降低利率（%）：{0}</PPTE2_LoanInterestPerOpinion>
+  <PPTE2_LoanInterestMin>最低利率：{0}</PPTE2_LoanInterestMin>
+  <PPTE2_LoanInterestMax>最高利率：{0}</PPTE2_LoanInterestMax>
+  <PPTE2_RobberyCooldown>抢劫冷却（天）：{0}</PPTE2_RobberyCooldown>
+  <PPTE2_RobberyHungerThreshold>抢劫饥饿阈值（食物水平低于此值才考虑抢）：{0}</PPTE2_RobberyHungerThreshold>
+  <PPTE2_RobberyTakePercent>抢夺比例：{0}</PPTE2_RobberyTakePercent>
+  <PPTE2_BeggingCooldown>乞讨冷却（天）：{0}</PPTE2_BeggingCooldown>
+  <PPTE2_BeggingAmountMin>乞讨最少票数：{0}</PPTE2_BeggingAmountMin>
+  <PPTE2_BeggingAmountMax>乞讨最多票数：{0}</PPTE2_BeggingAmountMax>
+  <PPTE2_BeggingChanceBase>乞讨成功率基准：{0}</PPTE2_BeggingChanceBase>
+  <PPTE2_BeggingChancePerOpinion>每点好感度成功率加成（%）：{0}</PPTE2_BeggingChancePerOpinion>
+  <PPTE2_SocialHint>囚犯会在吃不起饭时按自身状态发起这些行为。抢劫为真实近战，可能致死！每个囚犯可在「配置囚犯」窗口中单独允许/禁止。</PPTE2_SocialHint>
   <PPTE2_VerboseLog>详细日志</PPTE2_VerboseLog>
   <PPTE2_TicketDefaultName>饭票</PPTE2_TicketDefaultName>
   <PPTE2_TicketDefaultUnit>张</PPTE2_TicketDefaultUnit>
@@ -67,6 +90,13 @@
   <PPTE2_Enabled>已启用</PPTE2_Enabled>
   <PPTE2_Disabled>已禁用</PPTE2_Disabled>
   <PPTE2_ResetDefaults>恢复默认值</PPTE2_ResetDefaults>
+  <PPTE2_SocialSettingsTitle>囚犯社会行为</PPTE2_SocialSettingsTitle>
+  <PPTE2_FeatureLoan>借款</PPTE2_FeatureLoan>
+  <PPTE2_FeatureRobbery>抢劫</PPTE2_FeatureRobbery>
+  <PPTE2_FeatureBegging>乞讨</PPTE2_FeatureBegging>
+  <PPTE2_SocialFollow>跟随全局</PPTE2_SocialFollow>
+  <PPTE2_SocialAllow>允许</PPTE2_SocialAllow>
+  <PPTE2_SocialDeny>禁止</PPTE2_SocialDeny>
   <PPTE2_RansomOverrideTitle>赎身设置（0 = 跟随全局）</PPTE2_RansomOverrideTitle>
   <PPTE2_RansomTicketOverrideLabel>赎身所需饭票：</PPTE2_RansomTicketOverrideLabel>
   <PPTE2_RansomMinDaysOverrideLabel>最短囚禁天数：</PPTE2_RansomMinDaysOverrideLabel>
@@ -89,10 +119,27 @@
 
   <!-- 健康状态（Hediff） -->
   <PPTE2_HediffLabel>{1}：{0}</PPTE2_HediffLabel>
+  <PPTE2_HediffLabel_Debt>{1}欠款：{0} {2}</PPTE2_HediffLabel_Debt>
   <PPTE2_HediffTip_Balance>{1}余额：{0} {2}</PPTE2_HediffTip_Balance>
+  <PPTE2_HediffTip_Debt>欠 {0} {2}{1}。工资等收入将优先偿还欠款。</PPTE2_HediffTip_Debt>
 
   <!-- 消息 -->
-  <PPTE2_NoTickets>{0} 缺少 {1} 个{2}（仅有 {3} 个）。</PPTE2_NoTickets>
+  <PPTE2_MealOnCredit>{0} 赊账吃了{1}，欠 {2} 张{3}。工资等收入将优先还债。</PPTE2_MealOnCredit>
+  <PPTE2_NoTicketsBlocked>{0} 因缺少 {1} 张{2}（仅有 {3} 张）未能进食。</PPTE2_NoTicketsBlocked>
+  <PPTE2_LoanMade>{0} 向 {1} 借了 {2} 张{3}（利率 {4}%）。</PPTE2_LoanMade>
+  <PPTE2_LoanRepaidMsg>{0} 还清了向 {1} 借的 {2} 张{3}。</PPTE2_LoanRepaidMsg>
+  <PPTE2_LoanDefaultedMsg>{0} 的借款成了坏账，{1} 损失 {2} 张{3}。</PPTE2_LoanDefaultedMsg>
+  <PPTE2_PlayerLoanTitle>借款请求</PPTE2_PlayerLoanTitle>
+  <PPTE2_PlayerLoanBody>{0} 想向你借 {1} 张{2}。</PPTE2_PlayerLoanBody>
+  <PPTE2_PlayerLoanApprove>借出</PPTE2_PlayerLoanApprove>
+  <PPTE2_PlayerLoanReject>拒绝</PPTE2_PlayerLoanReject>
+  <PPTE2_PlayerLoanApproved>你借给 {0} {1} 张{2}。</PPTE2_PlayerLoanApproved>
+  <PPTE2_PlayerLoanRejected>你拒绝了 {0} 的借款请求。</PPTE2_PlayerLoanRejected>
+  <PPTE2_BegSuccess>{0} 向 {1} 讨到了 {2} 张{3}。</PPTE2_BegSuccess>
+  <PPTE2_RobberySuccessMsg>{0} 打倒了 {1}，抢走了 {2} 张{3}！</PPTE2_RobberySuccessMsg>
+  <PPTE2_RobberyFailedMsg>{0} 抢劫 {1} 失败，反被揍了一顿。</PPTE2_RobberyFailedMsg>
+  <PPTE2_OwesLabel>未还借款：{0} 张{1}</PPTE2_OwesLabel>
+  <PPTE2_RansomHasDebt>存在未还清的借款，无法赎身。</PPTE2_RansomHasDebt>
   <PPTE2_OrganSold>{0} 出卖了一颗 {1}，换得 {2} 个{3}。</PPTE2_OrganSold>
   <PPTE2_RansomRequestMsg>{0} 表示愿意用 {1} 张{2}赎身，等待你的许可。</PPTE2_RansomRequestMsg>
   <PPTE2_RansomApproved>{0} 用 {1} 张{2}成功赎身，已获释放！</PPTE2_RansomApproved>

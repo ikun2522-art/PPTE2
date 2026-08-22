@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <PPTE2_Robbed.label>被抢劫</PPTE2_Robbed.label>
+  <PPTE2_Robbed.stages.0.label>被抢劫</PPTE2_Robbed.stages.0.label>
+  <PPTE2_RobberyFailed.label>打架输了</PPTE2_RobberyFailed.label>
+  <PPTE2_RobberyFailed.stages.0.label>打架输了</PPTE2_RobberyFailed.stages.0.label>
+  <PPTE2_Begged.label>被乞讨</PPTE2_Begged.label>
+  <PPTE2_Begged.stages.0.label>被乞讨</PPTE2_Begged.stages.0.label>
+  <PPTE2_BeggingFailed.label>乞讨被拒</PPTE2_BeggingFailed.label>
+  <PPTE2_BeggingFailed.stages.0.label>乞讨被拒</PPTE2_BeggingFailed.stages.0.label>
+  <PPTE2_LoanDefaulted.label>借款坏账</PPTE2_LoanDefaulted.label>
+  <PPTE2_LoanDefaulted.stages.0.label>借款坏账</PPTE2_LoanDefaulted.stages.0.label>
+  <PPTE2_LoanRepaid.label>借款还清</PPTE2_LoanRepaid.label>
+  <PPTE2_LoanRepaid.stages.0.label>借款还清</PPTE2_LoanRepaid.stages.0.label>
+  <PPTE2_MealDebt.label>赊账压力</PPTE2_MealDebt.label>
+  <PPTE2_MealDebt.stages.0.label>赊账压力</PPTE2_MealDebt.stages.0.label>
+  <PPTE2_LoanTaken.label>借款负担</PPTE2_LoanTaken.label>
+  <PPTE2_LoanTaken.stages.0.label>借款负担</PPTE2_LoanTaken.stages.0.label>
+  <PPTE2_BeggingSucceeded.label>讨到施舍</PPTE2_BeggingSucceeded.label>
+  <PPTE2_BeggingSucceeded.stages.0.label>讨到施舍</PPTE2_BeggingSucceeded.stages.0.label>
+  <PPTE2_RobberySucceeded.label>抢劫得手</PPTE2_RobberySucceeded.label>
+  <PPTE2_RobberySucceeded.stages.0.label>抢劫得手</PPTE2_RobberySucceeded.stages.0.label>
+  <PPTE2_RobberyDefended.label>打退抢劫者</PPTE2_RobberyDefended.label>
+  <PPTE2_RobberyDefended.stages.0.label>打退抢劫者</PPTE2_RobberyDefended.stages.0.label>
+</LanguageData>

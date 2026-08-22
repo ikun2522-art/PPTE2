@@ -14,6 +14,9 @@ namespace PrisonersPayToEat2
         public float silverToTicketRate = 1.0f;
         public int startingTicketsPerPrisoner = 3;
         public bool ignoreDuringRiot = true;
+        // 赊账：余额不足时囚犯仍可吃饭（余额扣成负数），之后工资等收入优先还债。
+        // 关闭时余额不足直接吃不成（食物保留，不会浪费）。
+        public bool allowMealDebt = true;
         public bool logVerbose = false;
 
         // Ransom (赎身): a prisoner with enough tickets (and enough time served) may ask to buy
@@ -37,6 +40,30 @@ namespace PrisonersPayToEat2
         // Per-foodDef custom price override (absolute ticket cost per eaten unit; supports decimals).
         public Dictionary<string, float> customFoodPrices = new Dictionary<string, float>();
 
+        // ============ 囚犯社会行为（借款 / 抢劫 / 乞讨） ============
+        public bool enableLoans = true;
+        public float loanTriggerBalance = 10f;        // 余额低于此值会发起借款/乞讨/抢劫
+        public float loanCooldownDays = 1f;           // 借款冷却（游戏天）
+        public float maxLoanAmount = 50f;             // 单次借款/玩家借贷上限
+        public float loanInterestBase = 0.3f;         // 好感度 0 时的利率
+        public float loanInterestPerOpinion = 0.003f; // 每点好感度降低的利率
+        public float loanInterestMin = 0f;
+        public float loanInterestMax = 1f;
+        public bool allowPlayerLoans = false;         // 允许囚犯向玩家借（逐笔弹窗批准）
+        public bool badDebtMoodPenalty = true;        // 坏账时贷方心情减益
+
+        public bool enableRobbery = true;
+        public float robberyCooldownDays = 3f;        // 抢劫冷却（游戏天）——低频
+        public float robberyHungerThreshold = 0.4f;   // 食物水平低于此值（饿急眼）才考虑抢
+        public float robberyTakePercent = 0.3f;       // 抢走目标余额的比例
+
+        public bool enableBegging = true;
+        public float beggingCooldownDays = 1f;        // 乞讨冷却（游戏天）
+        public float beggingAmountMin = 1f;
+        public float beggingAmountMax = 3f;
+        public float beggingChanceBase = 0.35f;       // 好感度 0 时的乞讨成功率
+        public float beggingChancePerOpinion = 0.004f; // 每点好感度增加的成功率
+
         public override void ExposeData()
         {
             base.ExposeData();
@@ -47,6 +74,7 @@ namespace PrisonersPayToEat2
             Scribe_Values.Look(ref silverToTicketRate, "silverToTicketRate", 1.0f);
             Scribe_Values.Look(ref startingTicketsPerPrisoner, "startingTicketsPerPrisoner", 3);
             Scribe_Values.Look(ref ignoreDuringRiot, "ignoreDuringRiot", true);
+            Scribe_Values.Look(ref allowMealDebt, "allowMealDebt", true);
             Scribe_Values.Look(ref logVerbose, "logVerbose", false);
             Scribe_Values.Look(ref enableRansom, "enableRansom", true);
             Scribe_Values.Look(ref ransomTicketCost, "ransomTicketCost", 1000f);
@@ -61,6 +89,26 @@ namespace PrisonersPayToEat2
             if (workTypePieceWages == null) workTypePieceWages = new Dictionary<string, float>();
             Scribe_Collections.Look(ref customFoodPrices, "customFoodPrices", LookMode.Value, LookMode.Value);
             if (customFoodPrices == null) customFoodPrices = new Dictionary<string, float>();
+            Scribe_Values.Look(ref enableLoans, "enableLoans", true);
+            Scribe_Values.Look(ref loanTriggerBalance, "loanTriggerBalance", 10f);
+            Scribe_Values.Look(ref loanCooldownDays, "loanCooldownDays", 1f);
+            Scribe_Values.Look(ref maxLoanAmount, "maxLoanAmount", 50f);
+            Scribe_Values.Look(ref loanInterestBase, "loanInterestBase", 0.3f);
+            Scribe_Values.Look(ref loanInterestPerOpinion, "loanInterestPerOpinion", 0.003f);
+            Scribe_Values.Look(ref loanInterestMin, "loanInterestMin", 0f);
+            Scribe_Values.Look(ref loanInterestMax, "loanInterestMax", 1f);
+            Scribe_Values.Look(ref allowPlayerLoans, "allowPlayerLoans", false);
+            Scribe_Values.Look(ref badDebtMoodPenalty, "badDebtMoodPenalty", true);
+            Scribe_Values.Look(ref enableRobbery, "enableRobbery", true);
+            Scribe_Values.Look(ref robberyCooldownDays, "robberyCooldownDays", 3f);
+            Scribe_Values.Look(ref robberyHungerThreshold, "robberyHungerThreshold", 0.4f);
+            Scribe_Values.Look(ref robberyTakePercent, "robberyTakePercent", 0.3f);
+            Scribe_Values.Look(ref enableBegging, "enableBegging", true);
+            Scribe_Values.Look(ref beggingCooldownDays, "beggingCooldownDays", 1f);
+            Scribe_Values.Look(ref beggingAmountMin, "beggingAmountMin", 1f);
+            Scribe_Values.Look(ref beggingAmountMax, "beggingAmountMax", 3f);
+            Scribe_Values.Look(ref beggingChanceBase, "beggingChanceBase", 0.35f);
+            Scribe_Values.Look(ref beggingChancePerOpinion, "beggingChancePerOpinion", 0.004f);
         }
 
         /// <summary>Hourly wage for a given WorkTypeDef.defName; falls back to defaultWagePerHour.</summary>
@@ -72,7 +120,7 @@ namespace PrisonersPayToEat2
 
         // ================= Settings window: self-drawn tab bar + per-tab scrolling =================
 
-        private int _curTab; // 0=General, 1=WorkTypeWages, 2=FoodPrices
+        private int _curTab; // 0=General, 1=WorkTypeWages, 2=FoodPrices, 3=Social
 
         public void DoWindowContents(Rect inRect)
         {
@@ -81,7 +129,8 @@ namespace PrisonersPayToEat2
             {
                 "PPTE2_TabGeneral".Translate(),
                 "PPTE2_TabWorkWages".Translate(),
-                "PPTE2_TabFoodPrices".Translate()
+                "PPTE2_TabFoodPrices".Translate(),
+                "PPTE2_TabSocial".Translate()
             };
 
             float tabW = inRect.width / tabLabels.Length;
@@ -109,8 +158,75 @@ namespace PrisonersPayToEat2
             {
                 case 0: DrawGeneralTab(content); break;
                 case 1: DrawWorkTypeWagesTab(content); break;
-                default: DrawFoodPricesTab(content); break;
+                case 2: DrawFoodPricesTab(content); break;
+                default: DrawSocialTab(content); break;
             }
+        }
+
+        // ================= Tab 4: 囚犯社会行为（借款/抢劫/乞讨） =================
+
+        private Vector2 _socialScroll = Vector2.zero;
+
+        private void DrawSocialTab(Rect rect)
+        {
+            // Content: 5 checkboxes * 30 + 15 sliders * 54 = ~960
+            var view = new Rect(0f, 0f, rect.width - 20f, 990f);
+            Widgets.BeginScrollView(rect, ref _socialScroll, view);
+
+            float colW = (view.width - 40f) / 2f;
+
+            // left column: feature toggles
+            float ly = 4f;
+            DrawCheckboxRow(0f, ref ly, "PPTE2_EnableLoans".Translate(), ref enableLoans);
+            DrawCheckboxRow(0f, ref ly, "PPTE2_EnableRobbery".Translate(), ref enableRobbery);
+            DrawCheckboxRow(0f, ref ly, "PPTE2_EnableBegging".Translate(), ref enableBegging);
+            DrawCheckboxRow(0f, ref ly, "PPTE2_AllowPlayerLoans".Translate(), ref allowPlayerLoans);
+            DrawCheckboxRow(0f, ref ly, "PPTE2_BadDebtPenalty".Translate(), ref badDebtMoodPenalty);
+            ly += 20f; // breathing room
+
+            // loan sliders (left)
+            DrawSliderRow(0f, ref ly, colW, "PPTE2_LoanTriggerBalance".Translate(loanTriggerBalance.ToString("0.##")),
+                ref loanTriggerBalance, 0f, 100f);
+            DrawSliderRow(0f, ref ly, colW, "PPTE2_LoanCooldown".Translate(loanCooldownDays.ToString("0.#")),
+                ref loanCooldownDays, 0f, 10f);
+            DrawSliderRow(0f, ref ly, colW, "PPTE2_MaxLoanAmount".Translate(maxLoanAmount.ToString("0.##")),
+                ref maxLoanAmount, 1f, 500f);
+            DrawSliderRow(0f, ref ly, colW, "PPTE2_LoanInterestBase".Translate(loanInterestBase.ToString("0%")),
+                ref loanInterestBase, 0f, 1f);
+            DrawSliderRow(0f, ref ly, colW, "PPTE2_LoanInterestPerOpinion".Translate((loanInterestPerOpinion * 100f).ToString("0.0")),
+                ref loanInterestPerOpinion, 0f, 0.01f);
+            DrawSliderRow(0f, ref ly, colW, "PPTE2_LoanInterestMin".Translate(loanInterestMin.ToString("0%")),
+                ref loanInterestMin, 0f, 1f);
+            DrawSliderRow(0f, ref ly, colW, "PPTE2_LoanInterestMax".Translate(loanInterestMax.ToString("0%")),
+                ref loanInterestMax, 0f, 2f);
+
+            // right column: robbery + begging sliders
+            float rx = colW + 40f;
+            float ry = 4f;
+            DrawSliderRow(rx, ref ry, colW, "PPTE2_RobberyCooldown".Translate(robberyCooldownDays.ToString("0.#")),
+                ref robberyCooldownDays, 0f, 10f);
+            DrawSliderRow(rx, ref ry, colW, "PPTE2_RobberyHungerThreshold".Translate(robberyHungerThreshold.ToString("0.##")),
+                ref robberyHungerThreshold, 0f, 1f);
+            DrawSliderRow(rx, ref ry, colW, "PPTE2_RobberyTakePercent".Translate(robberyTakePercent.ToString("0%")),
+                ref robberyTakePercent, 0.05f, 1f);
+            ry += 24f;
+            DrawSliderRow(rx, ref ry, colW, "PPTE2_BeggingCooldown".Translate(beggingCooldownDays.ToString("0.#")),
+                ref beggingCooldownDays, 0f, 10f);
+            DrawSliderRow(rx, ref ry, colW, "PPTE2_BeggingAmountMin".Translate(beggingAmountMin.ToString("0.##")),
+                ref beggingAmountMin, 0f, 10f);
+            DrawSliderRow(rx, ref ry, colW, "PPTE2_BeggingAmountMax".Translate(beggingAmountMax.ToString("0.##")),
+                ref beggingAmountMax, 1f, 20f);
+            DrawSliderRow(rx, ref ry, colW, "PPTE2_BeggingChanceBase".Translate(beggingChanceBase.ToString("0%")),
+                ref beggingChanceBase, 0f, 1f);
+            DrawSliderRow(rx, ref ry, colW, "PPTE2_BeggingChancePerOpinion".Translate((beggingChancePerOpinion * 100f).ToString("0.0")),
+                ref beggingChancePerOpinion, 0f, 0.02f);
+
+            // hint at the bottom
+            GUI.color = new Color(0.7f, 0.7f, 0.65f);
+            Widgets.Label(new Rect(0f, Mathf.Max(ly, ry) + 20f, view.width, 60f), "PPTE2_SocialHint".Translate());
+            GUI.color = Color.white;
+
+            Widgets.EndScrollView();
         }
 
         // ================= Tab 1: General =================
@@ -119,8 +235,8 @@ namespace PrisonersPayToEat2
 
         private void DrawGeneralTab(Rect rect)
         {
-            // Content height: 6 sliders * 54 + 4 checkboxes * 30 + ticket name + ransom hint = ~540
-            var view = new Rect(0f, 0f, rect.width - 20f, 540f);
+            // Content height: 6 sliders * 54 + 5 checkboxes * 30 + ticket name + ransom hint = ~570
+            var view = new Rect(0f, 0f, rect.width - 20f, 580f);
             Widgets.BeginScrollView(rect, ref _generalScroll, view);
 
             float colW = (view.width - 40f) / 2f;
@@ -129,6 +245,7 @@ namespace PrisonersPayToEat2
             float ly = 4f;
             DrawCheckboxRow(0f, ref ly, "PPTE2_EnableOrganHarvest".Translate(), ref enableOrganHarvest);
             DrawCheckboxRow(0f, ref ly, "PPTE2_IgnoreRiot".Translate(), ref ignoreDuringRiot);
+            DrawCheckboxRow(0f, ref ly, "PPTE2_AllowMealDebt".Translate(), ref allowMealDebt);
             DrawCheckboxRow(0f, ref ly, "PPTE2_VerboseLog".Translate(), ref logVerbose);
             DrawCheckboxRow(0f, ref ly, "PPTE2_EnableRansom".Translate(), ref enableRansom);
 

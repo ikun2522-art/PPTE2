@@ -13,7 +13,7 @@ namespace PrisonersPayToEat2
         private readonly Pawn _prisoner;
         private PrisonerTicketData _data;
 
-        public override Vector2 InitialSize => new Vector2(440f, 560f);
+        public override Vector2 InitialSize => new Vector2(440f, 700f);
 
         public Window_PrisonerConfig(Pawn prisoner)
         {
@@ -22,6 +22,28 @@ namespace PrisonersPayToEat2
             doCloseX = true;
             forcePause = true;
             absorbInputAroundWindow = true;
+        }
+
+        /// <summary>一行三态按钮（跟随全局 / 允许 / 禁止），复用工资计费方式的行样式。</summary>
+        private void DrawSocialFeatureRow(Listing_Standard list, Rect inRect, string label,
+            PPTE2SocialSetting current, System.Action<PPTE2SocialSetting> set)
+        {
+            list.Label(label);
+            float w = (inRect.width - 8f) / 3f;
+            float by = list.CurHeight;
+            Color gold = new Color(1f, 0.85f, 0.45f);
+            for (int i = 0; i < 3; i++)
+            {
+                var v = (PPTE2SocialSetting)i;
+                string text = v == PPTE2SocialSetting.Follow ? "PPTE2_SocialFollow".Translate()
+                    : v == PPTE2SocialSetting.Allow ? "PPTE2_SocialAllow".Translate()
+                    : "PPTE2_SocialDeny".Translate();
+                var r = new Rect(inRect.x + i * w, by, w - 4f, 26f);
+                if (current == v) GUI.color = gold;
+                if (Widgets.ButtonText(r, text)) set(v);
+                GUI.color = Color.white;
+            }
+            list.Gap(34f);
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -64,6 +86,17 @@ namespace PrisonersPayToEat2
             }
             list.Gap(34f);
 
+            // 囚犯社会行为：每项三态（跟随全局 / 允许 / 禁止）
+            list.Gap(8f);
+            list.Label("PPTE2_SocialSettingsTitle".Translate());
+            list.Gap(4f);
+            DrawSocialFeatureRow(list, inRect, "PPTE2_FeatureLoan".Translate(),
+                _data.loanSetting, v => _data.loanSetting = v);
+            DrawSocialFeatureRow(list, inRect, "PPTE2_FeatureRobbery".Translate(),
+                _data.robberySetting, v => _data.robberySetting = v);
+            DrawSocialFeatureRow(list, inRect, "PPTE2_FeatureBegging".Translate(),
+                _data.beggingSetting, v => _data.beggingSetting = v);
+
             list.Gap(12f);
             bool overrideOn = _data.organHarvestOverrideEnabled;
             list.CheckboxLabeled("PPTE2_OverrideOrganHarvest".Translate(), ref overrideOn);
@@ -92,6 +125,9 @@ namespace PrisonersPayToEat2
                 _data.organHarvestOverride = false;
                 _data.ransomTicketOverride = 0f;
                 _data.ransomMinDaysOverride = 0f;
+                _data.loanSetting = PPTE2SocialSetting.Follow;
+                _data.robberySetting = PPTE2SocialSetting.Follow;
+                _data.beggingSetting = PPTE2SocialSetting.Follow;
             }
 
             list.Gap(16f);

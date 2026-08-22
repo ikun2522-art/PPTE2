@@ -17,9 +17,11 @@ Prisoners can no longer freeload off your colony's food supply! Every meal a pri
 - 囚犯进食必须支付饭票，价格由食物的**市场价值**决定（精致食物贵，简单食物便宜，营养膏按营养值折算）
 - 支持小数饭票（如 0.01 张），价格与余额精确到百分位
 - 支持**逐种食物单独定价**：设置页可对每种食物单独设置饭票价格
+- **赊账机制**（默认开启）：余额不足时囚犯仍可吃饭，余额扣成负数（欠款），之后工资等收入优先还债；健康页会以红字显示欠款。关闭赊账后，余额不足的囚犯将吃不到饭（食物保留不浪费）
 - Prisoners must pay meal tickets to eat. Price is based on the food's **market value**.
 - Fractional tickets supported (e.g. 0.01); prices and balances work down to two decimals.
 - Per-food pricing: override the ticket cost of any individual food item.
+- **Meal credit** (on by default): broke prisoners may still eat and the balance goes negative (debt); wages and other income repay the debt first. Debt shows in red in the health tab. With credit off, a prisoner who can't afford a meal simply cannot eat it (the food is kept, not wasted).
 
 ### ⛏️ Prison Labor 打工赚饭票 / Earn Tickets Through Prison Labor
 - 集成 Avius 的 **Prison Labor** MOD：哪些工种囚犯能做、工作区域、动机系统完全由 Prison Labor 管理
@@ -57,13 +59,25 @@ Prisoners can no longer freeload off your colony's food supply! Every meal a pri
 
 ### 🎛️ 玩家管理 / Player Controls
 - 选中囚犯：一个**「囚犯饭票」按钮**整合全部操作——饭票余额、发放/扣除饭票、配置囚犯、赎身批准
-- 囚犯的**健康标签页**会以「健康状态」形式直接显示饭票余额，颜色随余额变化（绿/黄/橙/红），悬停可见具体数量
-- 每个囚犯单独配置：个人食物倍率、个人工资倍率、计费方式（按时/按量）、是否允许贩卖器官、赎身所需饭票与最短囚禁天数
+- 囚犯的**健康标签页**会以「健康状态」形式直接显示饭票余额，颜色随余额变化（绿/黄/橙/红），悬停可见具体数量；欠款显示为红字
+- 每个囚犯单独配置：个人食物倍率、个人工资倍率、计费方式（按时/按量）、是否允许贩卖器官、赎身所需饭票与最短囚禁天数、**借款/抢劫/乞讨各自允许/禁止**
 - 手动发放/扣除支持小数
 - One **"Prisoner tickets" button** on a selected prisoner gathers every control — balance, give/take tickets, configure, ransom approval.
-- The prisoner's **health tab** shows the ticket balance as a "health status" row, colored by how much is left (green/yellow/orange/red); hover for the exact amount.
-- Per-prisoner settings: food multiplier, wage multiplier, billing mode (hourly/piece-rate), organ-sale permission, ransom ticket count & minimum imprisonment time.
+- The prisoner's **health tab** shows the ticket balance as a "health status" row, colored by how much is left (green/yellow/orange/red); debt shows in red; hover for details.
+- Per-prisoner settings: food multiplier, wage multiplier, billing mode (hourly/piece-rate), organ-sale permission, ransom ticket count & minimum imprisonment time, and **per-feature allow/deny for loans, robbery and begging**.
 - Manual give/take supports decimals.
+
+### 🗣️ 囚犯社会行为 / Prisoner Social Behaviors
+- 吃不起饭的囚犯会自己想办法：**借款 / 乞讨 / 抢劫**（AI 自动触发，可全局开关或单囚犯允许/禁止）
+- **借款**：向其他囚犯借饭票，**利率随好感度浮动**（好感越低利息越高）；借方收入自动优先还贷；借方被释放/死亡则坏账，贷方心情受损；有未还借款的囚犯无法赎身
+- **乞讨**：成功率取决于对方对自己的好感度，成功讨到少量饭票，失败则丢脸（心情减益）
+- **抢劫**：真实近战！谁先倒地谁输（可能致死），赢家拿走目标余额的一部分；输家挨打还丢脸
+- 可开启「向玩家借款」：囚犯会弹出请求窗口，由玩家逐笔批准（默认关闭）
+- Broke prisoners take matters into their own hands: **borrowing, begging and robbery** (AI-driven; global toggles plus per-prisoner allow/deny).
+- **Loans**: borrow tickets from other prisoners — **interest scales with opinion** (the worse they like you, the higher the interest). Income automatically repays loans first; if the borrower is released or dies it's bad debt and the lender's mood suffers. Prisoners with outstanding loans can't ransom themselves.
+- **Begging**: success depends on how much the target likes the beggar; small handouts on success, embarrassment on failure.
+- **Robbery**: a real melee fight! Whoever falls first loses (can be lethal); the winner takes a share of the victim's balance. The loser gets beaten up and humiliated.
+- Optional "borrow from the player": prisoners pop a request window you approve one by one (off by default).
 
 ### ⚙️ 其他 / Extras
 - **自定义饭票名称**（如改成"代币""劳动券"）
