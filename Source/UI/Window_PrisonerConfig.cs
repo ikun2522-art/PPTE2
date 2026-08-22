@@ -97,6 +97,16 @@ namespace PrisonersPayToEat2
             DrawSocialFeatureRow(list, inRect, "PPTE2_FeatureBegging".Translate(),
                 _data.beggingSetting, v => _data.beggingSetting = v);
 
+            // 父母代付（仅儿童可见）：跟随全局 / 允许 / 禁止
+            if (PrisonersPayToEat2Manager.IsChild(_prisoner))
+            {
+                list.Gap(6f);
+                list.Label("PPTE2_ChildPayTitle".Translate());
+                list.Gap(4f);
+                DrawSocialFeatureRow(list, inRect, "PPTE2_FeatureChildPay".Translate(),
+                    _data.childPaySetting, v => _data.childPaySetting = v);
+            }
+
             list.Gap(12f);
             bool overrideOn = _data.organHarvestOverrideEnabled;
             list.CheckboxLabeled("PPTE2_OverrideOrganHarvest".Translate(), ref overrideOn);
@@ -128,6 +138,7 @@ namespace PrisonersPayToEat2
                 _data.loanSetting = PPTE2SocialSetting.Follow;
                 _data.robberySetting = PPTE2SocialSetting.Follow;
                 _data.beggingSetting = PPTE2SocialSetting.Follow;
+                _data.childPaySetting = PPTE2SocialSetting.Follow;
             }
 
             list.Gap(16f);

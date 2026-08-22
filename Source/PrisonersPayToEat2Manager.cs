@@ -12,6 +12,9 @@ namespace PrisonersPayToEat2
     /// <summary>每囚犯对某社会行为的设置：跟随全局 / 强制允许 / 强制禁止。</summary>
     public enum PPTE2SocialSetting { Follow, Allow, Deny }
 
+    /// <summary>儿童饭票扣费模式：先自己的 / 先父母的 / 合并钱包。</summary>
+    public enum ChildPayMode { OwnFirst, ParentFirst, MergedPool }
+
     /// <summary>
     /// 一条未还清的囚犯间借款记录。还款由借方收入自动触发（见
     /// <see cref="PrisonersPayToEat2Manager.AddTickets"/>），还清后从列表移除；
@@ -55,6 +58,7 @@ namespace PrisonersPayToEat2
         public PPTE2SocialSetting loanSetting = PPTE2SocialSetting.Follow;     // 借款
         public PPTE2SocialSetting robberySetting = PPTE2SocialSetting.Follow;  // 抢劫
         public PPTE2SocialSetting beggingSetting = PPTE2SocialSetting.Follow;  // 乞讨
+        public PPTE2SocialSetting childPaySetting = PPTE2SocialSetting.Follow; // 父母代付（仅儿童）
 
         public void ExposeData()
         {
@@ -73,6 +77,7 @@ namespace PrisonersPayToEat2
             Scribe_Values.Look(ref loanSetting, "loanSetting", PPTE2SocialSetting.Follow);
             Scribe_Values.Look(ref robberySetting, "robberySetting", PPTE2SocialSetting.Follow);
             Scribe_Values.Look(ref beggingSetting, "beggingSetting", PPTE2SocialSetting.Follow);
+            Scribe_Values.Look(ref childPaySetting, "childPaySetting", PPTE2SocialSetting.Follow);
         }
     }
 
@@ -193,24 +198,136 @@ namespace PrisonersPayToEat2
             else workWageAccum[pawnId] = value;
         }
 
-        public bool TryPay(Pawn p, float cost)
+        // ================= 儿童父母代付 =================
+
+        /// <summary>是否为儿童（用原版成人判定取反；成人年龄线可被 MOD 调整，跟随游戏定义）。</summary>
+        public static bool IsChild(Pawn p)
+            => p != null && p.ageTracker != null && !p.ageTracker.Adult;
+
+        /// <summary>儿童的父母：本殖民地、在押、存活的直接父母（生父母/养父母都算，原版父母关系）。</summary>
+        public List<Pawn> SupportingParents(Pawn child)
         {
-            if (cost <= 0f) return true;
-            var d = DataFor(p);
-            if (d.ticketBalance < cost) return false;
-            d.ticketBalance -= cost;
-            return true;
+            var result = new List<Pawn>();
+            if (child == null || child.relations == null) return result;
+            var direct = child.relations.DirectRelations;
+            for (int i = 0; i < direct.Count; i++)
+            {
+                var rel = direct[i];
+                if (rel == null || rel.def != PawnRelationDefOf.Parent) continue;
+                var parent = rel.otherPawn;
+                if (parent == null || parent.Dead) continue;
+                if (!parent.IsPrisonerOfColony) continue;
+                result.Add(parent);
+            }
+            return result;
+        }
+
+        /// <summary>父母代付是否对该儿童生效（全局开关 × 每囚犯设置 × 至少一位在押父母）。</summary>
+        public bool ChildParentPayActive(Pawn child)
+        {
+            if (!IsChild(child)) return false;
+            if (!PrisonersPayToEat2Mod.Settings.enableChildParentPay) return false;
+            if (DataFor(child).childPaySetting == PPTE2SocialSetting.Deny) return false;
+            return SupportingParents(child).Count > 0;
+        }
+
+        /// <summary>父母的可用饭票合计（正余额之和；负余额的父母不参与代付）。</summary>
+        public float ParentTotalBalance(Pawn child)
+        {
+            float total = 0f;
+            foreach (var parent in SupportingParents(child))
+                total += Mathf.Max(0f, Balance(parent));
+            return total;
+        }
+
+        /// <summary>父母的名字列表（UI 显示用，逗号分隔）。</summary>
+        public string SupportingParentNames(Pawn child)
+        {
+            var names = new List<string>();
+            foreach (var parent in SupportingParents(child))
+                names.Add(parent.LabelShortCap);
+            return string.Join(", ", names.ToArray());
         }
 
         /// <summary>
-        /// 赊账支付：无论余额多少都扣除，允许扣成负数（欠款）。
-        /// 仅在设置开启进食赊账时由 <see cref="Patches.Harmony_Ingest"/> 调用；
-        /// 欠款会由之后 <see cref="AddTickets"/> 的收入（工资/卖器官等）自动优先偿还。
+        /// 可用余额：儿童自己的正余额 + 在押父母的正余额（父母代付生效时）；其余情况等于自己的余额。
+        /// 用于"买不买得起饭"的判断与社会行为（乞讨/借款）的"穷不穷"触发。
         /// </summary>
-        public void PayAllowDebt(Pawn p, float cost)
+        public float AvailableBalance(Pawn p)
+        {
+            if (p == null) return 0f;
+            float own = Mathf.Max(0f, Balance(p));
+            if (!ChildParentPayActive(p)) return own;
+            return own + ParentTotalBalance(p);
+        }
+
+        /// <summary>
+        /// 支付饭费或赎身费（含父母代付）。按全局 <see cref="ChildPayMode"/> 决定扣款顺序：
+        /// 先自己 = 自己的正余额优先，父母补差；先父母 = 父母按余额比例分摊，自己补差；
+        /// 合并钱包 = 孩子与父母按各自正余额比例共同分摊。
+        /// 超出家庭可用部分由儿童自己承担（赊账欠款）。无父母代付的普通囚犯行为与原赊账扣款一致。
+        /// </summary>
+        public void PayWithSupport(Pawn p, float cost)
         {
             if (cost <= 0f) return;
-            DataFor(p).ticketBalance -= cost;
+            var d = DataFor(p);
+            float remaining = cost;
+            if (!ChildParentPayActive(p))
+            {
+                d.ticketBalance -= remaining;
+                return;
+            }
+            var parents = SupportingParents(p);
+            float parentTotal = ParentTotalBalance(p);
+
+            switch (PrisonersPayToEat2Mod.Settings.childPayMode)
+            {
+                case ChildPayMode.ParentFirst:
+                    SplitPay(parents, Mathf.Min(remaining, parentTotal));
+                    remaining -= Mathf.Min(remaining, parentTotal);
+                    break;
+                case ChildPayMode.MergedPool:
+                {
+                    float pool = Mathf.Max(0f, d.ticketBalance) + parentTotal;
+                    var members = new List<Pawn> { p };
+                    members.AddRange(parents);
+                    SplitPay(members, Mathf.Min(remaining, pool));
+                    remaining -= Mathf.Min(remaining, pool);
+                    break;
+                }
+                default: // OwnFirst
+                    float ownPay = Mathf.Min(Mathf.Max(0f, d.ticketBalance), remaining);
+                    d.ticketBalance -= ownPay;
+                    remaining -= ownPay;
+                    SplitPay(parents, Mathf.Min(remaining, parentTotal));
+                    remaining -= Mathf.Min(remaining, parentTotal);
+                    break;
+            }
+            d.ticketBalance -= remaining; // 超出家庭可用部分成为孩子的欠款
+        }
+
+        /// <summary>把 amount 按各 pawn 的正余额比例分摊扣款（最后一个吃下浮点余量）。</summary>
+        private static void SplitPay(List<Pawn> pawns, float amount)
+        {
+            if (pawns == null || pawns.Count == 0 || amount <= 0f) return;
+            var mgr = Current;
+            var weights = new List<float>(pawns.Count);
+            float total = 0f;
+            for (int i = 0; i < pawns.Count; i++)
+            {
+                float w = Mathf.Max(0f, mgr.Balance(pawns[i]));
+                weights.Add(w);
+                total += w;
+            }
+            if (total <= 0f) return;
+            float remaining = amount;
+            for (int i = 0; i < pawns.Count; i++)
+            {
+                float pay = i == pawns.Count - 1 ? remaining : amount * (weights[i] / total);
+                if (pay > 0f) mgr.DataFor(pawns[i]).ticketBalance -= pay;
+                remaining -= pay;
+                if (remaining <= 0.0001f) break;
+            }
         }
 
         // ================= 囚犯社会行为（借款/抢劫/乞讨） =================
@@ -406,11 +523,11 @@ namespace PrisonersPayToEat2
             return Mathf.Max(0f, (Find.TickManager.TicksGame - start) / 60000f);
         }
 
-        /// <summary>True when balance and imprisonment-time requirements are met.</summary>
+        /// <summary>True when available balance (儿童含父母代付) and imprisonment-time requirements are met.</summary>
         public bool CanRansom(Pawn p)
         {
             if (p == null || !p.IsPrisonerOfColony) return false;
-            if (Balance(p) < EffectiveRansomCost(p)) return false;
+            if (AvailableBalance(p) < EffectiveRansomCost(p)) return false;
             if (HasOutstandingLoans(p)) return false; // 有未还清的借款不能赎身
             if (ImprisonedDays(p) < EffectiveRansomMinDays(p)) return false;
             return true;
@@ -468,7 +585,7 @@ namespace PrisonersPayToEat2
             }
 
             float cost = EffectiveRansomCost(p);
-            TryPay(p, cost);
+            PayWithSupport(p, cost); // 儿童可用父母饭票代付赎身费
             d.ransomRequested = false;
             d.ransomDeniedUntilTick = -1;
             prisonStartTick.Remove(p.thingIDNumber);

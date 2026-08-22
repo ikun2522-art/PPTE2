@@ -6,11 +6,12 @@
     <label>robbed</label>
     <thoughtClass>Thought_Memory</thoughtClass>
     <durationDays>3</durationDays>
-    <moodOffset>-8</moodOffset>
-    <opinionOffset>-20</opinionOffset>
     <stages>
       <li>
         <label>robbed</label>
+        <description>I was robbed and beaten. My hard-earned tickets are gone.</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+        <baseOpinionOffset>-20</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>
@@ -21,10 +22,11 @@
     <label>lost a fight</label>
     <thoughtClass>Thought_Memory</thoughtClass>
     <durationDays>2</durationDays>
-    <moodOffset>-6</moodOffset>
     <stages>
       <li>
         <label>lost a fight</label>
+        <description>I tried to rob someone and lost the fight. I got beaten up for nothing.</description>
+        <baseMoodEffect>-6</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>
@@ -35,11 +37,12 @@
     <label>was begged</label>
     <thoughtClass>Thought_Memory</thoughtClass>
     <durationDays>1</durationDays>
-    <moodOffset>-2</moodOffset>
-    <opinionOffset>-5</opinionOffset>
     <stages>
       <li>
         <label>was begged</label>
+        <description>Someone begged me for tickets. Being seen as a source of charity is embarrassing.</description>
+        <baseMoodEffect>-2</baseMoodEffect>
+        <baseOpinionOffset>-5</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>
@@ -50,10 +53,11 @@
     <label>begging refused</label>
     <thoughtClass>Thought_Memory</thoughtClass>
     <durationDays>1</durationDays>
-    <moodOffset>-4</moodOffset>
     <stages>
       <li>
         <label>begging refused</label>
+        <description>I begged for tickets and was refused. How humiliating.</description>
+        <baseMoodEffect>-4</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>
@@ -64,11 +68,12 @@
     <label>loan went bad</label>
     <thoughtClass>Thought_Memory</thoughtClass>
     <durationDays>10</durationDays>
-    <moodOffset>-10</moodOffset>
-    <opinionOffset>-30</opinionOffset>
     <stages>
       <li>
         <label>loan went bad</label>
+        <description>I lent tickets to a prisoner who never repaid them. All that money, gone.</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+        <baseOpinionOffset>-30</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>
@@ -79,11 +84,12 @@
     <label>loan repaid</label>
     <thoughtClass>Thought_Memory</thoughtClass>
     <durationDays>3</durationDays>
-    <moodOffset>5</moodOffset>
-    <opinionOffset>10</opinionOffset>
     <stages>
       <li>
         <label>loan repaid</label>
+        <description>The prisoner who borrowed from me paid it back. Good faith is rewarded.</description>
+        <baseMoodEffect>5</baseMoodEffect>
+        <baseOpinionOffset>10</baseOpinionOffset>
       </li>
     </stages>
   </ThoughtDef>
@@ -94,10 +100,11 @@
     <label>meal debt</label>
     <thoughtClass>Thought_Memory</thoughtClass>
     <durationDays>1</durationDays>
-    <moodOffset>-5</moodOffset>
     <stages>
       <li>
         <label>meal debt</label>
+        <description>I ate on credit and now owe tickets I don't have. The debt hangs over me.</description>
+        <baseMoodEffect>-5</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>
@@ -108,10 +115,11 @@
     <label>loan burden</label>
     <thoughtClass>Thought_Memory</thoughtClass>
     <durationDays>2</durationDays>
-    <moodOffset>-4</moodOffset>
     <stages>
       <li>
         <label>loan burden</label>
+        <description>I'm carrying a debt I borrowed from another prisoner. It weighs on my mind.</description>
+        <baseMoodEffect>-4</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>
@@ -122,10 +130,11 @@
     <label>got alms</label>
     <thoughtClass>Thought_Memory</thoughtClass>
     <durationDays>1</durationDays>
-    <moodOffset>2</moodOffset>
     <stages>
       <li>
         <label>got alms</label>
+        <description>Someone took pity on me and gave me tickets. At least someone cares.</description>
+        <baseMoodEffect>2</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>
@@ -136,10 +145,11 @@
     <label>robbery paid off</label>
     <thoughtClass>Thought_Memory</thoughtClass>
     <durationDays>2</durationDays>
-    <moodOffset>5</moodOffset>
     <stages>
       <li>
         <label>robbery paid off</label>
+        <description>I won the fight and took their tickets. Crime pays.</description>
+        <baseMoodEffect>5</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>
@@ -150,10 +160,11 @@
     <label>fought off a robber</label>
     <thoughtClass>Thought_Memory</thoughtClass>
     <durationDays>2</durationDays>
-    <moodOffset>3</moodOffset>
     <stages>
       <li>
         <label>fought off a robber</label>
+        <description>I fought off a would-be robber. They won't try that again.</description>
+        <baseMoodEffect>3</baseMoodEffect>
       </li>
     </stages>
   </ThoughtDef>

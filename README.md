@@ -79,6 +79,20 @@ Prisoners can no longer freeload off your colony's food supply! Every meal a pri
 - **Robbery**: a real melee fight! Whoever falls first loses (can be lethal); the winner takes a share of the victim's balance. The loser gets beaten up and humiliated.
 - Optional "borrow from the player": prisoners pop a request window you approve one by one (off by default).
 
+### 👶 儿童父母代付 / Parents Pay for Children
+- 儿童囚犯（Biotech，成人年龄线以下）吃饭时，费用可由**在押的父母**代付——生父母/养父母都算，父母被释放/招募/越狱/死亡后代付自动失效
+- 三种扣费模式（全局设置）：**先自己**（孩子余额优先，父母补差）/ **先父母**（父母按余额比例分摊，孩子补差）/ **合并钱包**（家庭视为一个账户，按各自余额比例共同分摊，健康页显示合计余额）
+- 多位在押父母按**余额比例**平摊（负余额的父母不参与）
+- 父母有钱的儿童不会去乞讨/借钱/抢劫；抢劫目标仍只看被抢者自己的实际余额，抢不走父母的饭票
+- **赎身同样支持父母代付**：儿童可用余额（含父母）满足赎身要求即可提出请求，批准后从家庭余额中扣除
+- 可全局开关（默认开），也可在「配置囚犯」窗口对单个儿童允许/禁止
+- Child prisoners (Biotech, below the adult age) can have their meals paid from their **imprisoned parents'** tickets — biological and adopted parents both count; support ends automatically when a parent is released, recruited, escapes or dies.
+- Three payment modes (global setting): **Own first** (child's balance pays first, parents cover the shortfall) / **Parents first** (parents split by balance share, child covers the shortfall) / **Shared wallet** (the family is one account; costs are split by each member's balance share, and the health tab shows the combined balance).
+- Multiple imprisoned parents **split costs proportionally to their balances** (parents with negative balances don't contribute).
+- A child backed by well-off parents won't beg, borrow or rob; robbery targets still count only the victim's own balance — nobody can steal the parents' tickets by attacking the child.
+- **Ransom also supports parent pay**: a child can request freedom once the combined available balance (including parents) meets the ransom cost; approving deducts from the family balance.
+- Global toggle (on by default) plus a per-prisoner allow/deny in the prisoner config window.
+
 ### ⚙️ 其他 / Extras
 - **自定义饭票名称**（如改成"代币""劳动券"）
 - 设置页三个标签页：通用设置 / 按工种饭票 / 食物价格（带搜索）

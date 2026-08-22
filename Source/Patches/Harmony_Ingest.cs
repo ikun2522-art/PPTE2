@@ -41,13 +41,14 @@ namespace PrisonersPayToEat2
 
             // 赊账关闭且买不起这顿饭：拦下进食。Thing.Ingested 内部才销毁食物，
             // 前缀直接跳过 = 食物保留、不加营养，囚犯只是吃不到（不会浪费饭）。
+            // 儿童可动用父母的饭票（可用余额 = 自己 + 在押父母），因此用可用余额判断。
             if (!PrisonersPayToEat2Mod.Settings.allowMealDebt)
             {
                 var mgr = PrisonersPayToEat2Manager.Current;
-                float balance = mgr?.Balance(ingester) ?? 0f;
-                if (balance < evt.ticketCost)
+                float available = mgr?.AvailableBalance(ingester) ?? 0f;
+                if (available < evt.ticketCost)
                 {
-                    NotifyBlocked(ingester, evt.ticketCost, balance);
+                    NotifyBlocked(ingester, evt.ticketCost, available);
                     return false;
                 }
             }
@@ -71,11 +72,11 @@ namespace PrisonersPayToEat2
             if (mgr == null) return;
 
             float cost = evt.ticketCost;
-            float balance = mgr.Balance(ingester);
+            float available = mgr.AvailableBalance(ingester);
 
-            if (balance >= cost)
+            if (available >= cost)
             {
-                mgr.TryPay(ingester, cost);
+                mgr.PayWithSupport(ingester, cost);
                 if (ingester.Spawned)
                     MoteMaker.ThrowText(ingester.DrawPos, ingester.Map, "-" + cost.ToString("0.##"), new Color(1f, 0.7f, 0.3f));
                 if (PrisonersPayToEat2Mod.Settings.logVerbose)
@@ -87,12 +88,12 @@ namespace PrisonersPayToEat2
             // 赊账关闭时余额不足已被前缀拦截，走不到这里。
             if (PrisonersPayToEat2Mod.Settings.allowMealDebt)
             {
-                mgr.PayAllowDebt(ingester, cost);
-                float debt = cost - balance;
+                mgr.PayWithSupport(ingester, cost);
+                float debt = cost - available;
                 if (ingester.Spawned)
                     MoteMaker.ThrowText(ingester.DrawPos, ingester.Map, "+" + debt.ToString("0.##") + "!", Color.red);
                 if (PrisonersPayToEat2Mod.Settings.logVerbose)
-                    Log.Warning($"[PPTE2] {ingester.LabelShortCap} ate {__instance.LabelNoCount} on credit: need={cost:0.##} paid={balance:0.##} debt={debt:0.##}");
+                    Log.Warning($"[PPTE2] {ingester.LabelShortCap} ate {__instance.LabelNoCount} on credit: need={cost:0.##} paid={available:0.##} debt={debt:0.##}");
                 Messages.Message("PPTE2_MealOnCredit".Translate(ingester.LabelShortCap,
                         __instance.LabelNoCount, debt.ToString("0.##"), PPTEName.Ticket),
                     ingester, MessageTypeDefOf.RejectInput);

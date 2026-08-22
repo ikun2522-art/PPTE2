@@ -100,7 +100,7 @@ namespace PrisonersPayToEat2
             var s = PrisonersPayToEat2Mod.Settings;
             if (!mgr.FeatureAllowed(beggar, SocialFeatureKind.Begging)) return;
             if (!CooldownReady(lastBegAttempt, beggar.thingIDNumber, now, s.beggingCooldownDays)) return;
-            if (mgr.Balance(beggar) >= s.loanTriggerBalance) return; // 不穷不讨
+            if (mgr.AvailableBalance(beggar) >= s.loanTriggerBalance) return; // 不穷不讨（儿童可算上父母代付）
             // 需要有点"惨"：饿或心情差
             if (beggar.needs?.food != null && beggar.needs.food.CurLevel > 0.5f
                 && (beggar.needs.mood == null || beggar.needs.mood.CurLevel > 0.4f)) return;
@@ -143,7 +143,7 @@ namespace PrisonersPayToEat2
             var s = PrisonersPayToEat2Mod.Settings;
             if (!mgr.FeatureAllowed(borrower, SocialFeatureKind.Loan)) return;
             if (!CooldownReady(lastLoanAttempt, borrower.thingIDNumber, now, s.loanCooldownDays)) return;
-            if (mgr.Balance(borrower) >= s.loanTriggerBalance) return;
+            if (mgr.AvailableBalance(borrower) >= s.loanTriggerBalance) return;
             if (mgr.HasOutstandingLoans(borrower)) return; // 已有借款不能再借，防止债务链
             Mark(lastLoanAttempt, borrower.thingIDNumber, now);
 
@@ -182,7 +182,7 @@ namespace PrisonersPayToEat2
             var s = PrisonersPayToEat2Mod.Settings;
             if (!mgr.FeatureAllowed(robber, SocialFeatureKind.Robbery)) return;
             if (!CooldownReady(lastRobAttempt, robber.thingIDNumber, now, s.robberyCooldownDays)) return;
-            if (mgr.Balance(robber) >= s.loanTriggerBalance) return; // 有钱不抢
+            if (mgr.AvailableBalance(robber) >= s.loanTriggerBalance) return; // 有钱不抢（儿童可算上父母代付）
             if (robber.needs?.food == null || robber.needs.food.CurLevel >= s.robberyHungerThreshold) return; // 不够饿不抢
             if (robber.needs?.mood != null && robber.needs.mood.CurLevel > 0.35f) return; // 心情好不抢（低频）
             Mark(lastRobAttempt, robber.thingIDNumber, now);

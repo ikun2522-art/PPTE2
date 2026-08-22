@@ -46,6 +46,13 @@ namespace PrisonersPayToEat2
                 list.Label("PPTE2_OwesLabel".Translate(owed.ToString("0.##"), PPTEName.Ticket));
                 GUI.color = Color.white;
             }
+            if (mgr.ChildParentPayActive(_prisoner))
+            {
+                GUI.color = new Color(0.75f, 0.9f, 0.75f);
+                list.Label("PPTE2_ParentPayLine".Translate(
+                    mgr.ParentTotalBalance(_prisoner).ToString("0.##"), PPTEName.Ticket));
+                GUI.color = Color.white;
+            }
 
             list.Gap(12f);
             float btnW = (inRect.width - 8f) / 3f;
@@ -58,12 +65,12 @@ namespace PrisonersPayToEat2
                 Find.WindowStack.Add(new Window_PrisonerConfig(_prisoner));
             list.Gap(38f);
 
-            DrawRansomSection(list, mgr, balance, inRect);
+            DrawRansomSection(list, mgr, inRect);
 
             list.End();
         }
 
-        private void DrawRansomSection(Listing_Standard list, PrisonersPayToEat2Manager mgr, float balance, Rect inRect)
+        private void DrawRansomSection(Listing_Standard list, PrisonersPayToEat2Manager mgr, Rect inRect)
         {
             var settings = PrisonersPayToEat2Mod.Settings;
             GUI.color = new Color(0.85f, 0.85f, 0.75f);
@@ -82,8 +89,9 @@ namespace PrisonersPayToEat2
             float cost = mgr.EffectiveRansomCost(_prisoner);
             float minDays = mgr.EffectiveRansomMinDays(_prisoner);
             float days = mgr.ImprisonedDays(_prisoner);
+            float available = mgr.AvailableBalance(_prisoner); // 儿童含父母代付
             GUI.color = new Color(0.75f, 0.75f, 0.7f);
-            list.Label("PPTE2_RansomNeedTickets".Translate(cost.ToString("0.##"), balance.ToString("0.##")));
+            list.Label("PPTE2_RansomNeedTickets".Translate(cost.ToString("0.##"), available.ToString("0.##")));
             list.Label("PPTE2_RansomNeedTime".Translate(minDays.ToString("0.#"), days.ToString("0.#")));
             if (mgr.HasOutstandingLoans(_prisoner))
             {

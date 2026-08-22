@@ -67,6 +67,12 @@
   <PPTE2_RansomTicketCost>Tickets required for ransom: {0}</PPTE2_RansomTicketCost>
   <PPTE2_RansomMinDays>Minimum days imprisoned: {0}</PPTE2_RansomMinDays>
   <PPTE2_RansomHint>Once a prisoner has saved up enough tickets and served enough time, they may occasionally ask to buy their freedom. You must approve for them to be released automatically — their tickets are used as payment. Per-prisoner overrides are available in the prisoner config window.</PPTE2_RansomHint>
+  <PPTE2_EnableChildParentPay>Allow child prisoners to use their parents' tickets</PPTE2_EnableChildParentPay>
+  <PPTE2_ChildPayModeLabel>Child meal payment:</PPTE2_ChildPayModeLabel>
+  <PPTE2_ChildPayModeOwnFirst>Own first</PPTE2_ChildPayModeOwnFirst>
+  <PPTE2_ChildPayModeParentFirst>Parents first</PPTE2_ChildPayModeParentFirst>
+  <PPTE2_ChildPayModeMerged>Shared wallet</PPTE2_ChildPayModeMerged>
+  <PPTE2_ChildPayHint>Child prisoners' meals can be paid from their imprisoned parents' tickets (requires Biotech children). "Own first / Parents first" sets the deduction order; "Shared wallet" treats the family as one account and shows the combined balance. Per-prisoner allow/deny is in the prisoner config window.</PPTE2_ChildPayHint>
 
   <!-- Inspect / Gizmo -->
   <PPTE2_GizmoMenu>Prisoner tickets</PPTE2_GizmoMenu>
@@ -97,6 +103,8 @@
   <PPTE2_SocialFollow>Follow global</PPTE2_SocialFollow>
   <PPTE2_SocialAllow>Allow</PPTE2_SocialAllow>
   <PPTE2_SocialDeny>Deny</PPTE2_SocialDeny>
+  <PPTE2_ChildPayTitle>Parent pay (children only)</PPTE2_ChildPayTitle>
+  <PPTE2_FeatureChildPay>Parent pay</PPTE2_FeatureChildPay>
   <PPTE2_RansomOverrideTitle>Ransom (0 = follow global)</PPTE2_RansomOverrideTitle>
   <PPTE2_RansomTicketOverrideLabel>Tickets required:</PPTE2_RansomTicketOverrideLabel>
   <PPTE2_RansomMinDaysOverrideLabel>Minimum days imprisoned:</PPTE2_RansomMinDaysOverrideLabel>
@@ -122,6 +130,8 @@
   <PPTE2_HediffLabel_Debt>{1} debt: {0} {2}</PPTE2_HediffLabel_Debt>
   <PPTE2_HediffTip_Balance>{1} balance: {0} {2}</PPTE2_HediffTip_Balance>
   <PPTE2_HediffTip_Debt>Owes {0} {2} of {1}. Wages and other income repay the debt first.</PPTE2_HediffTip_Debt>
+  <PPTE2_HediffTip_ParentSupport>Parents can cover {0} {1}(s) ({2})</PPTE2_HediffTip_ParentSupport>
+  <PPTE2_HediffTip_MergedPool>Shared family tickets: {0} {1}(s)</PPTE2_HediffTip_MergedPool>
 
   <!-- Messages -->
   <PPTE2_MealOnCredit>{0} ate {1} on credit and now owes {2} {3}(s). Wages and other income will repay the debt first.</PPTE2_MealOnCredit>
@@ -139,6 +149,7 @@
   <PPTE2_RobberySuccessMsg>{0} overpowered {1} and stole {2} {3}(s)!</PPTE2_RobberySuccessMsg>
   <PPTE2_RobberyFailedMsg>{0}'s robbery of {1} failed and {0} got beaten up.</PPTE2_RobberyFailedMsg>
   <PPTE2_OwesLabel>Outstanding loan: {0} {1}(s)</PPTE2_OwesLabel>
+  <PPTE2_ParentPayLine>Parents can cover: {0} {1}(s)</PPTE2_ParentPayLine>
   <PPTE2_RansomHasDebt>Cannot ransom with an outstanding loan.</PPTE2_RansomHasDebt>
   <PPTE2_OrganSold>{0} sold a {1} for {2} {3}(s).</PPTE2_OrganSold>
   <PPTE2_RansomRequestMsg>{0} offers {1} {2}(s) to buy freedom and awaits your approval.</PPTE2_RansomRequestMsg>

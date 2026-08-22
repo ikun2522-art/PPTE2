@@ -7,7 +7,7 @@ namespace PrisonersPayToEat2
     public class PrisonersPayToEat2Mod : Mod
     {
         public const string HarmonyId = "aaa.prisonerspaytoeat2";
-        public const string ModVersion = "2.1.1";
+        public const string ModVersion = "2.2.0";
 
         public static PrisonersPayToEat2Settings Settings;
         public static PrisonersPayToEat2Mod Instance;

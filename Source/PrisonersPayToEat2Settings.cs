@@ -25,6 +25,11 @@ namespace PrisonersPayToEat2
         public float ransomTicketCost = 1000f;
         public float ransomMinDays = 0f;
 
+        // 儿童父母代付：儿童囚犯（Biotech 13 岁以下）吃饭时可由在押的父母代付饭票。
+        // 扣费模式见 ChildPayMode：先自己 / 先父母 / 合并钱包（家庭按比例分摊）。
+        public bool enableChildParentPay = true;
+        public ChildPayMode childPayMode = ChildPayMode.OwnFirst;
+
         // Custom display name for the meal ticket currency (empty = default localized name).
         public string customTicketName = "";
 
@@ -79,6 +84,8 @@ namespace PrisonersPayToEat2
             Scribe_Values.Look(ref enableRansom, "enableRansom", true);
             Scribe_Values.Look(ref ransomTicketCost, "ransomTicketCost", 1000f);
             Scribe_Values.Look(ref ransomMinDays, "ransomMinDays", 0f);
+            Scribe_Values.Look(ref enableChildParentPay, "enableChildParentPay", true);
+            Scribe_Values.Look(ref childPayMode, "childPayMode", ChildPayMode.OwnFirst);
             Scribe_Values.Look(ref customTicketName, "customTicketName", "");
             Scribe_Collections.Look(ref workTypeWages, "workTypeWages", LookMode.Value, LookMode.Value);
             if (workTypeWages == null) workTypeWages = new Dictionary<string, float>();
@@ -169,8 +176,8 @@ namespace PrisonersPayToEat2
 
         private void DrawSocialTab(Rect rect)
         {
-            // Content: 5 checkboxes * 30 + 15 sliders * 54 = ~960
-            var view = new Rect(0f, 0f, rect.width - 20f, 990f);
+            // Content: 5 checkboxes * 30 + 15 sliders * 54 + auto-height hint = ~1050
+            var view = new Rect(0f, 0f, rect.width - 20f, 1150f);
             Widgets.BeginScrollView(rect, ref _socialScroll, view);
 
             float colW = (view.width - 40f) / 2f;
@@ -223,7 +230,8 @@ namespace PrisonersPayToEat2
 
             // hint at the bottom
             GUI.color = new Color(0.7f, 0.7f, 0.65f);
-            Widgets.Label(new Rect(0f, Mathf.Max(ly, ry) + 20f, view.width, 60f), "PPTE2_SocialHint".Translate());
+            float hintH = Text.CalcHeight("PPTE2_SocialHint".Translate(), view.width);
+            Widgets.Label(new Rect(0f, Mathf.Max(ly, ry) + 20f, view.width, hintH), "PPTE2_SocialHint".Translate());
             GUI.color = Color.white;
 
             Widgets.EndScrollView();
@@ -235,8 +243,8 @@ namespace PrisonersPayToEat2
 
         private void DrawGeneralTab(Rect rect)
         {
-            // Content height: 6 sliders * 54 + 5 checkboxes * 30 + ticket name + ransom hint = ~570
-            var view = new Rect(0f, 0f, rect.width - 20f, 580f);
+            // Content height: 6 sliders * 54 + 6 checkboxes * 30 + ticket name + child-pay mode + hints (auto height)
+            var view = new Rect(0f, 0f, rect.width - 20f, 800f);
             Widgets.BeginScrollView(rect, ref _generalScroll, view);
 
             float colW = (view.width - 40f) / 2f;
@@ -248,6 +256,32 @@ namespace PrisonersPayToEat2
             DrawCheckboxRow(0f, ref ly, "PPTE2_AllowMealDebt".Translate(), ref allowMealDebt);
             DrawCheckboxRow(0f, ref ly, "PPTE2_VerboseLog".Translate(), ref logVerbose);
             DrawCheckboxRow(0f, ref ly, "PPTE2_EnableRansom".Translate(), ref enableRansom);
+            DrawCheckboxRow(0f, ref ly, "PPTE2_EnableChildParentPay".Translate(), ref enableChildParentPay);
+            if (enableChildParentPay)
+            {
+                ly += 4f;
+                Widgets.Label(new Rect(0f, ly + 2f, colW, 24f), "PPTE2_ChildPayModeLabel".Translate());
+                ly += 28f;
+                float bw = (colW - 8f) / 3f;
+                Color gold = new Color(1f, 0.85f, 0.45f);
+                for (int i = 0; i < 3; i++)
+                {
+                    var mode = (ChildPayMode)i;
+                    string label = mode == ChildPayMode.OwnFirst ? "PPTE2_ChildPayModeOwnFirst".Translate()
+                        : mode == ChildPayMode.ParentFirst ? "PPTE2_ChildPayModeParentFirst".Translate()
+                        : "PPTE2_ChildPayModeMerged".Translate();
+                    var r = new Rect(i * bw, ly, bw - 4f, 26f);
+                    if (childPayMode == mode) GUI.color = gold;
+                    if (Widgets.ButtonText(r, label)) childPayMode = mode;
+                    GUI.color = Color.white;
+                }
+                ly += 32f;
+                GUI.color = new Color(0.7f, 0.7f, 0.65f);
+                float childHintH = Text.CalcHeight("PPTE2_ChildPayHint".Translate(), colW);
+                Widgets.Label(new Rect(0f, ly, colW, childHintH), "PPTE2_ChildPayHint".Translate());
+                GUI.color = Color.white;
+                ly += childHintH + 8f;
+            }
 
             // ticket name editor
             Widgets.Label(new Rect(0f, ly + 2f, 200f, 24f), "PPTE2_TicketNameLabel".Translate());
@@ -271,7 +305,8 @@ namespace PrisonersPayToEat2
 
             // ransom hint under the left column
             GUI.color = new Color(0.7f, 0.7f, 0.65f);
-            Widgets.Label(new Rect(0f, ly, colW, 90f), "PPTE2_RansomHint".Translate());
+            float ransomHintH = Text.CalcHeight("PPTE2_RansomHint".Translate(), colW);
+            Widgets.Label(new Rect(0f, ly, colW, ransomHintH), "PPTE2_RansomHint".Translate());
             GUI.color = Color.white;
 
             // right column: sliders
@@ -336,13 +371,14 @@ namespace PrisonersPayToEat2
                 foreach (var wt in _cachedWorkTypes) workTypeWages[wt.defName] = defaultWagePerHour;
             }
 
-            // wrapped hint below the toolbar
+            // wrapped hint below the toolbar (auto height so long translations never clip)
             GUI.color = new Color(0.7f, 0.7f, 0.65f);
-            Widgets.Label(new Rect(rect.x, toolY + 30f, rect.width, 40f), "PPTE2_WorkTypeWagesHint".Translate());
+            float hintH = Text.CalcHeight("PPTE2_WorkTypeWagesHint".Translate(), rect.width);
+            Widgets.Label(new Rect(rect.x, toolY + 30f, rect.width, hintH), "PPTE2_WorkTypeWagesHint".Translate());
             GUI.color = Color.white;
 
             // scrollable list filling the rest of the tab
-            var listRect = new Rect(rect.x, toolY + 74f, rect.width, rect.yMax - toolY - 74f);
+            var listRect = new Rect(rect.x, toolY + 34f + hintH, rect.width, rect.yMax - toolY - 34f - hintH);
             EnsureWorkTypesCached();
             const float rowH = 28f;
             var view = new Rect(0f, 0f, listRect.width - 20f, 30f + _cachedWorkTypes.Count * rowH);

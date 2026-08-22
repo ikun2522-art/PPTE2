@@ -2,24 +2,35 @@
 <LanguageData>
   <PPTE2_Robbed.label>被抢劫</PPTE2_Robbed.label>
   <PPTE2_Robbed.stages.0.label>被抢劫</PPTE2_Robbed.stages.0.label>
+  <PPTE2_Robbed.stages.0.description>我被抢劫了，攒下的饭票被抢走，还挨了一顿打。</PPTE2_Robbed.stages.0.description>
   <PPTE2_RobberyFailed.label>打架输了</PPTE2_RobberyFailed.label>
   <PPTE2_RobberyFailed.stages.0.label>打架输了</PPTE2_RobberyFailed.stages.0.label>
+  <PPTE2_RobberyFailed.stages.0.description>我试着抢劫别人，结果打输了，白挨一顿揍。</PPTE2_RobberyFailed.stages.0.description>
   <PPTE2_Begged.label>被乞讨</PPTE2_Begged.label>
   <PPTE2_Begged.stages.0.label>被乞讨</PPTE2_Begged.stages.0.label>
+  <PPTE2_Begged.stages.0.description>有人向我讨饭票，被当成施舍对象可真丢脸。</PPTE2_Begged.stages.0.description>
   <PPTE2_BeggingFailed.label>乞讨被拒</PPTE2_BeggingFailed.label>
   <PPTE2_BeggingFailed.stages.0.label>乞讨被拒</PPTE2_BeggingFailed.stages.0.label>
+  <PPTE2_BeggingFailed.stages.0.description>我向别人讨饭票被拒绝了，太丢人了。</PPTE2_BeggingFailed.stages.0.description>
   <PPTE2_LoanDefaulted.label>借款坏账</PPTE2_LoanDefaulted.label>
   <PPTE2_LoanDefaulted.stages.0.label>借款坏账</PPTE2_LoanDefaulted.stages.0.label>
+  <PPTE2_LoanDefaulted.stages.0.description>我借给别人的饭票要不回来了，血本无归。</PPTE2_LoanDefaulted.stages.0.description>
   <PPTE2_LoanRepaid.label>借款还清</PPTE2_LoanRepaid.label>
   <PPTE2_LoanRepaid.stages.0.label>借款还清</PPTE2_LoanRepaid.stages.0.label>
+  <PPTE2_LoanRepaid.stages.0.description>借我饭票的人还清了债务，守信的人有好报。</PPTE2_LoanRepaid.stages.0.description>
   <PPTE2_MealDebt.label>赊账压力</PPTE2_MealDebt.label>
   <PPTE2_MealDebt.stages.0.label>赊账压力</PPTE2_MealDebt.stages.0.label>
+  <PPTE2_MealDebt.stages.0.description>我赊账吃了饭，欠下的饭票像石头一样压在心头。</PPTE2_MealDebt.stages.0.description>
   <PPTE2_LoanTaken.label>借款负担</PPTE2_LoanTaken.label>
   <PPTE2_LoanTaken.stages.0.label>借款负担</PPTE2_LoanTaken.stages.0.label>
+  <PPTE2_LoanTaken.stages.0.description>我欠着别的囚犯的债，心里沉甸甸的。</PPTE2_LoanTaken.stages.0.description>
   <PPTE2_BeggingSucceeded.label>讨到施舍</PPTE2_BeggingSucceeded.label>
   <PPTE2_BeggingSucceeded.stages.0.label>讨到施舍</PPTE2_BeggingSucceeded.stages.0.label>
+  <PPTE2_BeggingSucceeded.stages.0.description>有人可怜我，给了几张饭票，总算还有人惦记。</PPTE2_BeggingSucceeded.stages.0.description>
   <PPTE2_RobberySucceeded.label>抢劫得手</PPTE2_RobberySucceeded.label>
   <PPTE2_RobberySucceeded.stages.0.label>抢劫得手</PPTE2_RobberySucceeded.stages.0.label>
+  <PPTE2_RobberySucceeded.stages.0.description>我打赢了架还抢到了饭票，这买卖划算。</PPTE2_RobberySucceeded.stages.0.description>
   <PPTE2_RobberyDefended.label>打退抢劫者</PPTE2_RobberyDefended.label>
   <PPTE2_RobberyDefended.stages.0.label>打退抢劫者</PPTE2_RobberyDefended.stages.0.label>
+  <PPTE2_RobberyDefended.stages.0.description>我打退了想抢劫我的家伙，他不会再敢来了。</PPTE2_RobberyDefended.stages.0.description>
 </LanguageData>

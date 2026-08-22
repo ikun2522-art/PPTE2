@@ -67,6 +67,12 @@
   <PPTE2_RansomTicketCost>赎身所需饭票：{0}</PPTE2_RansomTicketCost>
   <PPTE2_RansomMinDays>最短囚禁天数：{0}</PPTE2_RansomMinDays>
   <PPTE2_RansomHint>囚犯攒够饭票且囚禁足够时间后，有一定概率提出赎身请求；需玩家同意后才自动释放，并扣除对应饭票。可在「配置囚犯」窗口为单个囚犯单独设置。</PPTE2_RansomHint>
+  <PPTE2_EnableChildParentPay>允许儿童囚犯使用父母饭票</PPTE2_EnableChildParentPay>
+  <PPTE2_ChildPayModeLabel>儿童扣费方式：</PPTE2_ChildPayModeLabel>
+  <PPTE2_ChildPayModeOwnFirst>先自己</PPTE2_ChildPayModeOwnFirst>
+  <PPTE2_ChildPayModeParentFirst>先父母</PPTE2_ChildPayModeParentFirst>
+  <PPTE2_ChildPayModeMerged>合并钱包</PPTE2_ChildPayModeMerged>
+  <PPTE2_ChildPayHint>儿童囚犯吃饭时，费用可由在押的父母代付（需 Biotech 儿童）。「先自己 / 先父母」决定扣费顺序，「合并钱包」将家庭视为一个账户并显示合计余额。可在「配置囚犯」窗口对单个儿童允许/禁止。</PPTE2_ChildPayHint>
 
   <!-- 选中 / Gizmo -->
   <PPTE2_GizmoMenu>囚犯饭票</PPTE2_GizmoMenu>
@@ -97,6 +103,8 @@
   <PPTE2_SocialFollow>跟随全局</PPTE2_SocialFollow>
   <PPTE2_SocialAllow>允许</PPTE2_SocialAllow>
   <PPTE2_SocialDeny>禁止</PPTE2_SocialDeny>
+  <PPTE2_ChildPayTitle>父母代付（仅儿童）</PPTE2_ChildPayTitle>
+  <PPTE2_FeatureChildPay>父母代付</PPTE2_FeatureChildPay>
   <PPTE2_RansomOverrideTitle>赎身设置（0 = 跟随全局）</PPTE2_RansomOverrideTitle>
   <PPTE2_RansomTicketOverrideLabel>赎身所需饭票：</PPTE2_RansomTicketOverrideLabel>
   <PPTE2_RansomMinDaysOverrideLabel>最短囚禁天数：</PPTE2_RansomMinDaysOverrideLabel>
@@ -122,6 +130,8 @@
   <PPTE2_HediffLabel_Debt>{1}欠款：{0} {2}</PPTE2_HediffLabel_Debt>
   <PPTE2_HediffTip_Balance>{1}余额：{0} {2}</PPTE2_HediffTip_Balance>
   <PPTE2_HediffTip_Debt>欠 {0} {2}{1}。工资等收入将优先偿还欠款。</PPTE2_HediffTip_Debt>
+  <PPTE2_HediffTip_ParentSupport>父母可代付 {0} 张{1}（{2}）</PPTE2_HediffTip_ParentSupport>
+  <PPTE2_HediffTip_MergedPool>家庭合并饭票：{0} 张{1}</PPTE2_HediffTip_MergedPool>
 
   <!-- 消息 -->
   <PPTE2_MealOnCredit>{0} 赊账吃了{1}，欠 {2} 张{3}。工资等收入将优先还债。</PPTE2_MealOnCredit>
@@ -139,6 +149,7 @@
   <PPTE2_RobberySuccessMsg>{0} 打倒了 {1}，抢走了 {2} 张{3}！</PPTE2_RobberySuccessMsg>
   <PPTE2_RobberyFailedMsg>{0} 抢劫 {1} 失败，反被揍了一顿。</PPTE2_RobberyFailedMsg>
   <PPTE2_OwesLabel>未还借款：{0} 张{1}</PPTE2_OwesLabel>
+  <PPTE2_ParentPayLine>父母可代付：{0} 张{1}</PPTE2_ParentPayLine>
   <PPTE2_RansomHasDebt>存在未还清的借款，无法赎身。</PPTE2_RansomHasDebt>
   <PPTE2_OrganSold>{0} 出卖了一颗 {1}，换得 {2} 个{3}。</PPTE2_OrganSold>
   <PPTE2_RansomRequestMsg>{0} 表示愿意用 {1} 张{2}赎身，等待你的许可。</PPTE2_RansomRequestMsg>
