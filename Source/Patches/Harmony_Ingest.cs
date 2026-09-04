@@ -139,7 +139,7 @@ namespace PrisonersPayToEat2
             return true;
         }
 
-        private static bool InPrisonBreak(Pawn p)
+        internal static bool InPrisonBreak(Pawn p)
         {
             if (p?.mindState == null || p.Map == null) return false;
             var lord = p.Map.lordManager?.LordOf(p); // escape lords carry a LordJob named *PrisonBreak*

@@ -68,6 +68,7 @@
     <Compile Include="PieceRateWorker.cs" />
     <Compile Include="RecipeWorker_OrganSale.cs" />
     <Compile Include="Patches\Harmony_Ingest.cs" />
+    <Compile Include="Patches\Harmony_FoodSearch.cs" />
     <Compile Include="Patches\Harmony_UI.cs" />
     <Compile Include="Patches\Harmony_PrisonLabor.cs" />
     <Compile Include="Patches\Harmony_PieceRate.cs" />
