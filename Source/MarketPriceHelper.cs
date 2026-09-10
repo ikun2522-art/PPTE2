@@ -52,18 +52,19 @@ namespace PrisonersPayToEat2
             if (foodDef == null) return 0f;
             var s = PrisonersPayToEat2Mod.Settings;
             var mgr = PrisonersPayToEat2Manager.Current;
+            float personalMultiplier = mgr?.EffectiveFoodMultiplier(prisoner) ?? 1f;
 
             // 1) per-food override (absolute ticket price) takes top priority
             if (s.customFoodPrices != null && s.customFoodPrices.TryGetValue(foodDef.defName, out float custom))
             {
-                float overrideCost = custom * mgr.EffectiveFoodMultiplier(prisoner);
+                float overrideCost = custom * personalMultiplier;
                 return UnityEngine.Mathf.Max(overrideCost, MinTicketCost);
             }
 
             // 2) fallback: market-value formula
             float perItem = FoodMarketValue(foodDef);
             float ticketPerSilver = s.silverToTicketRate;
-            float formulaCost = perItem * ticketPerSilver * s.foodPriceMultiplier * mgr.EffectiveFoodMultiplier(prisoner);
+            float formulaCost = perItem * ticketPerSilver * s.foodPriceMultiplier * personalMultiplier;
             return UnityEngine.Mathf.Max(formulaCost, MinTicketCost);
         }
     }

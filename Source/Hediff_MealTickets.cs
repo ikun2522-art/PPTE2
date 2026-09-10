@@ -47,11 +47,11 @@ namespace PrisonersPayToEat2
                     if (PrisonersPayToEat2Mod.Settings.childPayMode == ChildPayMode.MergedPool)
                         tip += "\n" + "PPTE2_HediffTip_MergedPool".Translate(
                             (mgr.Balance(pawn) + mgr.ParentTotalBalance(pawn)).ToString("0.##"),
-                            PPTEName.Ticket, PPTEName.TicketUnit);
+                            PPTEName.Ticket);
                     else
                         tip += "\n" + "PPTE2_HediffTip_ParentSupport".Translate(
                             mgr.ParentTotalBalance(pawn).ToString("0.##"),
-                            PPTEName.Ticket, PPTEName.TicketUnit, mgr.SupportingParentNames(pawn));
+                            PPTEName.Ticket, mgr.SupportingParentNames(pawn));
                 }
                 return tip;
             }

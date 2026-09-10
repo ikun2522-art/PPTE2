@@ -62,8 +62,12 @@ namespace PrisonersPayToEat2
                     def = foodSource.def;
             }
             if (def == null || def.ingestible == null) return false;
+            // 只对能提供营养的食物收费（与 Harmony_Ingest.ShouldCharge 保持一致）
+            if (!Harmony_Ingest.IsChargeableFood(def)) return false;
 
-            float cost = MarketPriceHelper.TicketCost(def, eater);
+            // 按实际会吃掉的份数估算（生食/肉干会一次吃多份），否则这里放行、
+            // Ingested 前缀再拦下，囚犯就会走到食物前空嚼一轮又吃不到（正是本补丁要避免的循环）。
+            float cost = MarketPriceHelper.TicketCost(def, eater) * CountUnits.Estimate(eater, foodSource);
             float available = PrisonersPayToEat2Manager.Current?.AvailableBalance(eater) ?? 0f;
             return available < cost;
         }

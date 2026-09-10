@@ -114,7 +114,8 @@ namespace PrisonersPayToEat2
         public PrisonersPayToEat2Manager() { }
         public PrisonersPayToEat2Manager(Game game) { }
 
-        public static PrisonersPayToEat2Manager For(Game game) => game.GetComponent<PrisonersPayToEat2Manager>();
+        // game 可能为 null（主菜单、读档早期），此时不应抛 NRE 而应返回 null 让调用方跳过
+        public static PrisonersPayToEat2Manager For(Game game) => game?.GetComponent<PrisonersPayToEat2Manager>();
         public static PrisonersPayToEat2Manager Current => For(Verse.Current.Game);
 
         public PrisonerTicketData DataFor(Pawn p)
@@ -160,29 +161,41 @@ namespace PrisonersPayToEat2
                 if (loan.owed <= 0f) { loans.RemoveAt(i); continue; }
                 if (d.ticketBalance <= 0f) break;
 
+                var lender = FindPawnById(loan.lenderId);
+                if (lender == null)
+                {
+                    // 贷方已不在场（死亡/被带走/离图）：债务直接作废。否则每笔收入都会从借方
+                    // 扣款却无人接收，饭票凭空蒸发，而且借方会被这笔债永久挡住赎身。
+                    // 贷方的心情减益由 PrisonerSocialTicker.SweepBadLoans 负责。
+                    loans.RemoveAt(i);
+                    ClearLoanBurdenThought(borrower);
+                    continue;
+                }
+
                 float pay = Mathf.Min(loan.owed, d.ticketBalance);
                 d.ticketBalance -= pay;
                 loan.owed -= pay;
-                var lender = FindPawnById(loan.lenderId);
-                if (lender != null)
-                {
-                    DataFor(lender).ticketBalance += pay;
-                if (loan.owed <= 0f)
-                {
-                    // 还清：移除借方的"借款负担"，贷方获得"借款还清"（心情 +5）
-                    var loanTakenDef = GetThought("PPTE2_LoanTaken");
-                    if (loanTakenDef != null)
-                        borrower.needs?.mood?.thoughts?.memories?.RemoveMemoriesOfDef(loanTakenDef);
-                    var repaidThought = GetThought("PPTE2_LoanRepaid");
-                    if (repaidThought != null)
-                        lender.needs?.mood?.thoughts?.memories?.TryGainMemory(repaidThought, borrower);
-                    Messages.Message("PPTE2_LoanRepaidMsg".Translate(
-                            borrower.LabelShortCap, lender.LabelShortCap, loan.principal.ToString("0.##"), PPTEName.Ticket),
-                        borrower, MessageTypeDefOf.PositiveEvent);
-                }
-                }
-                if (loan.owed <= 0f) loans.RemoveAt(i);
+                DataFor(lender).ticketBalance += pay;
+                if (loan.owed > 0f) continue;
+
+                // 还清：移除借方的"借款负担"，贷方获得"借款还清"（心情 +5）
+                ClearLoanBurdenThought(borrower);
+                var repaidThought = GetThought("PPTE2_LoanRepaid");
+                if (repaidThought != null)
+                    lender.needs?.mood?.thoughts?.memories?.TryGainMemory(repaidThought, borrower);
+                Messages.Message("PPTE2_LoanRepaidMsg".Translate(
+                        borrower.LabelShortCap, lender.LabelShortCap, loan.principal.ToString("0.##"), PPTEName.Ticket),
+                    borrower, MessageTypeDefOf.PositiveEvent);
+                loans.RemoveAt(i);
             }
+        }
+
+        /// <summary>移除借方的"借款负担"心情（还清或债务作废时调用）。</summary>
+        private static void ClearLoanBurdenThought(Pawn borrower)
+        {
+            var loanTakenDef = GetThought("PPTE2_LoanTaken");
+            if (loanTakenDef != null)
+                borrower?.needs?.mood?.thoughts?.memories?.RemoveMemoriesOfDef(loanTakenDef);
         }
 
         public float Balance(Pawn p) => DataFor(p)?.ticketBalance ?? 0f;
@@ -385,10 +398,17 @@ namespace PrisonersPayToEat2
                 s.loanInterestMin, s.loanInterestMax);
         }
 
-        /// <summary>生成一笔囚犯间借款：借方立即到账，贷方立即扣款，记录待还金额（本金+利息）。</summary>
-        public void MakeLoan(Pawn borrower, Pawn lender, float amount, float interest)
+        /// <summary>
+        /// 生成一笔囚犯间借款：借方立即到账，贷方立即扣款，记录待还金额（本金+利息）。
+        /// 返回实际放款额（赊账关闭时贷方余额不能被扣成负数，按贷方可动用余额封顶，
+        /// 避免凭空增发饭票；封顶后为 0 则不放款）。
+        /// </summary>
+        public float MakeLoan(Pawn borrower, Pawn lender, float amount, float interest)
         {
-            if (amount <= 0f || borrower == null || lender == null) return;
+            if (amount <= 0f || borrower == null || lender == null) return 0f;
+            if (!PrisonersPayToEat2Mod.Settings.allowMealDebt)
+                amount = Mathf.Min(amount, Mathf.Max(0f, Balance(lender)));
+            if (amount <= 0f) return 0f;
             AddTickets(borrower, amount);
             AddTickets(lender, -amount);
             loans.Add(new LoanRecord
@@ -403,6 +423,7 @@ namespace PrisonersPayToEat2
             var loanThought = GetThought("PPTE2_LoanTaken");
             if (loanThought != null)
                 borrower.needs?.mood?.thoughts?.memories?.TryGainMemory(loanThought, lender);
+            return amount;
         }
 
         /// <summary>该囚犯是否还有未还清的借款（有借款不能赎身，防止"借票赎身跑路"）。</summary>
@@ -614,7 +635,10 @@ namespace PrisonersPayToEat2
             if (workWageAccum == null) workWageAccum = new Dictionary<int, float>();
             Scribe_Collections.Look(ref prisonStartTick, "prisonStartTick", LookMode.Value, LookMode.Value);
             if (prisonStartTick == null) prisonStartTick = new Dictionary<int, int>();
-            Scribe_Collections.Look(ref loans, "loans", LookMode.Value, LookMode.Deep);
+            // List<T> 必须用单 lookMode 重载；写成 (LookMode.Value, LookMode.Deep) 会绑定到
+            // params object[] ctorArgs 重载，导致实际按 LookMode.Value 序列化 IExposable 元素
+            // （Scribe_Values 直接报错返回），借款记录会在存读档后全部丢失。
+            Scribe_Collections.Look(ref loans, "loans", LookMode.Deep);
             if (loans == null) loans = new List<LoanRecord>();
             // research contributions are transient; drop stale refs on load
             if (Scribe.mode == LoadSaveMode.LoadingVars)
@@ -628,6 +652,21 @@ namespace PrisonersPayToEat2
             RansomTicker.Tick();
             PrisonerSocialTicker.Tick();
             EnsureTicketHediffs();
+        }
+
+        // 读档 / 开新档时清空进程级缓存。这些表以 thingIDNumber 为键（读档后编号会复用），
+        // 且读档不会重载程序集，所以必须显式清理：
+        //  - 上一局遗留的"进行中打架"会在新存档里被补结算，凭空转账；
+        //  - 上一局的借款/抢劫/乞讨冷却与提示节流会错误继承到本局囚犯身上。
+        public override void LoadedGame() => ResetTransientState();
+        public override void StartedNewGame() => ResetTransientState();
+
+        private void ResetTransientState()
+        {
+            researchContrib.Clear();
+            PrisonerSocialTicker.ResetTransientState();
+            PrisonLaborWageTicker.ResetTransientState();
+            Harmony_Ingest.ResetTransientState();
         }
 
         /// <summary>

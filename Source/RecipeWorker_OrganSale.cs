@@ -28,6 +28,9 @@ namespace PrisonersPayToEat2
         {
             var organKey = OrganKey;
             if (organKey == null) yield break;
+            // 本配方只对殖民地囚犯开放：否则殖民者/访客也会出现在手术列表里，
+            // 且 ApplyOnPawn 会给非囚犯发票（顺带为其创建饭票数据）。
+            if (pawn == null || !pawn.IsPrisonerOfColony) yield break;
             var mgr = PrisonersPayToEat2Manager.Current;
             if (mgr == null) yield break;
 
@@ -47,6 +50,7 @@ namespace PrisonersPayToEat2
         {
             if (!base.AvailableOnNow(thing, part)) return false;
             if (!(thing is Pawn p)) return true;
+            if (!p.IsPrisonerOfColony) return false; // 只对殖民地囚犯开放
             if (!PrisonersPayToEat2Manager.Current?.CanHarvestOrgans(p) ?? true) return false;
             return true;
         }
@@ -55,6 +59,7 @@ namespace PrisonersPayToEat2
         {
             base.ApplyOnPawn(pawn, part, billDoer, ingredients, bill);
             if (pawn.Dead) return; // surgery failed or patient died: no payout
+            if (!pawn.IsPrisonerOfColony) return; // 兜底：非囚犯不发饭票（正常入口已被 GetPartsToApplyOn 挡住）
             if (part == null || !pawn.health.hediffSet.GetNotMissingParts().Contains(part))
             {
                 OrganHarvestHelper.OnOrganRemoved(pawn, OrganKey); // part successfully removed

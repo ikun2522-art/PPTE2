@@ -61,6 +61,9 @@ namespace PrisonersPayToEat2
         // the moment a work session ends
         private static readonly Dictionary<int, bool> wasWorking = new Dictionary<int, bool>();
 
+        /// <summary>读档/换存档时清空进程级缓存（thingIDNumber 跨存档会复用，不能留着）。</summary>
+        public static void ResetTransientState() => wasWorking.Clear();
+
         public static void Tick()
         {
             if (!PrisonLaborBridge.Present) return;

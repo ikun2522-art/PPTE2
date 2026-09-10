@@ -35,6 +35,19 @@ namespace PrisonersPayToEat2
         }
         private static readonly List<ActiveFight> fights = new List<ActiveFight>();
 
+        /// <summary>
+        /// 清空进程级缓存状态。这些表以 thingIDNumber 为键且不随存档保存，而读档不会重载
+        /// 程序集，所以换存档时必须清掉：否则上一局的"进行中打架"会在新存档里被补结算，
+        /// 冷却/提示节流也会错误继承。
+        /// </summary>
+        public static void ResetTransientState()
+        {
+            lastLoanAttempt.Clear();
+            lastRobAttempt.Clear();
+            lastBegAttempt.Clear();
+            fights.Clear();
+        }
+
         public static void Tick()
         {
             var game = Current.Game;
@@ -166,13 +179,15 @@ namespace PrisonersPayToEat2
 
             float amount = Mathf.Min(s.maxLoanAmount, Mathf.Max(1f, s.loanTriggerBalance - mgr.Balance(borrower)));
             float interest = mgr.LoanInterestFor(lender, borrower);
-            mgr.MakeLoan(borrower, lender, amount, interest);
+            // MakeLoan 会在赊账关闭时按贷方可动用余额封顶，返回实际放款额（0 = 贷方出不起）
+            float lent = mgr.MakeLoan(borrower, lender, amount, interest);
+            if (lent <= 0.01f) return;
             Messages.Message("PPTE2_LoanMade".Translate(
-                    borrower.LabelShortCap, lender.LabelShortCap, amount.ToString("0.##"), PPTEName.Ticket,
+                    borrower.LabelShortCap, lender.LabelShortCap, lent.ToString("0.##"), PPTEName.Ticket,
                     (interest * 100f).ToString("0")),
                 borrower, MessageTypeDefOf.NeutralEvent);
             if (s.logVerbose)
-                Log.Message($"[PPTE2] {borrower.LabelShortCap} borrowed {amount:0.##} tickets from {lender.LabelShortCap} at {interest * 100f:0}% interest.");
+                Log.Message($"[PPTE2] {borrower.LabelShortCap} borrowed {lent:0.##} tickets from {lender.LabelShortCap} at {interest * 100f:0}% interest.");
         }
 
         // ================= 抢劫 =================
@@ -282,6 +297,10 @@ namespace PrisonersPayToEat2
                 var lender = PrisonersPayToEat2Manager.FindPawnById(loan.lenderId);
                 if (lender != null && s.badDebtMoodPenalty)
                     GainThought(lender, "PPTE2_LoanDefaulted", borrower);
+                // 债务作废，借方不该再背着"借款负担"（否则这笔心情减益会一直留着）
+                var loanTakenDef = PrisonersPayToEat2Manager.GetThought("PPTE2_LoanTaken");
+                if (loanTakenDef != null)
+                    borrower?.needs?.mood?.thoughts?.memories?.RemoveMemoriesOfDef(loanTakenDef);
                 mgr.loans.RemoveAt(i);
                 if (lender != null)
                     Messages.Message("PPTE2_LoanDefaultedMsg".Translate(
