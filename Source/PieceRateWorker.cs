@@ -120,12 +120,12 @@ namespace PrisonersPayToEat2
             }
         }
 
-        /// <summary>Credit a piece-rate payout for a completed unit. Guards: prisoner, PrisonLabor, mode active.</summary>
+        /// <summary>Credit a piece-rate payout for a completed unit. Guards: prisoner, some labour provider active, mode active.</summary>
         public static void Credit(Pawn pawn, WorkTypeDef wt, float units)
         {
             if (pawn == null || wt == null || units <= 0f) return;
             if (!pawn.IsPrisonerOfColony) return;
-            if (!PrisonLaborBridge.Present) return;
+            if (!PrisonerWorkSystem.WorkIncomeEnabled) return;
             if (!IsPieceRateActive(pawn, wt)) return;
             float wage = GetPieceWage(wt.defName);
             if (wage <= 0f) return;
@@ -140,6 +140,7 @@ namespace PrisonersPayToEat2
             if (accum >= 0.01f)
             {
                 mgr.AddTickets(pawn, accum);
+                Need_Motivation.NotifyWage(pawn, accum);
                 if (settings.logVerbose)
                     Log.Message($"[PPTE2] {pawn.LabelShortCap} earned {accum:0.##} tickets (piece rate: {wt.defName}). Balance={mgr.Balance(pawn):0.##}");
                 accum = 0f;

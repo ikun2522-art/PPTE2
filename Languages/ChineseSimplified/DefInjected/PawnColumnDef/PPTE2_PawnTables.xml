@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <PPTE2_ColWorkToggle.label>工作</PPTE2_ColWorkToggle.label>
+  <PPTE2_ColWorkToggle.headerTip>是否强制该囚犯工作赚取饭票。</PPTE2_ColWorkToggle.headerTip>
+  <PPTE2_ColMotivation.label>动机</PPTE2_ColMotivation.label>
+  <PPTE2_ColMotivation.headerTip>囚犯的工作动机。无人看管、挨饿的囚犯动机下降；动机过低会拒绝工作。</PPTE2_ColMotivation.headerTip>
+  <PPTE2_ColBalance.label>余额</PPTE2_ColBalance.label>
+  <PPTE2_ColBalance.headerTip>饭票余额。点击打开囚犯菜单。</PPTE2_ColBalance.headerTip>
+  <PPTE2_ColWorkStatus.label>状态</PPTE2_ColWorkStatus.label>
+  <PPTE2_ColWorkStatus.headerTip>该囚犯当前正在做的事情。</PPTE2_ColWorkStatus.headerTip>
+  <PPTE2_ColPrisonerArea.label>活动区</PPTE2_ColPrisonerArea.label>
+  <PPTE2_ColPrisonerArea.headerTip>限制该囚犯可活动和工作的范围。</PPTE2_ColPrisonerArea.headerTip>
+</LanguageData>

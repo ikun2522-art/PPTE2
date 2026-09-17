@@ -97,6 +97,16 @@ namespace PrisonersPayToEat2
             DrawSocialFeatureRow(list, inRect, "PPTE2_FeatureBegging".Translate(),
                 _data.beggingSetting, v => _data.beggingSetting = v);
 
+            // 强制工作（内置劳工系统；装 Prison Labor 时由它接管，此处不显示）
+            if (!PrisonLaborBridge.Present)
+            {
+                list.Gap(6f);
+                list.Label("PPTE2_WorkSettingsTitle".Translate());
+                list.Gap(4f);
+                DrawSocialFeatureRow(list, inRect, "PPTE2_FeatureWork".Translate(),
+                    _data.workSetting, v => _data.workSetting = v);
+            }
+
             // 父母代付（仅儿童可见）：跟随全局 / 允许 / 禁止
             if (PrisonersPayToEat2Manager.IsChild(_prisoner))
             {
@@ -139,6 +149,7 @@ namespace PrisonersPayToEat2
                 _data.robberySetting = PPTE2SocialSetting.Follow;
                 _data.beggingSetting = PPTE2SocialSetting.Follow;
                 _data.childPaySetting = PPTE2SocialSetting.Follow;
+                _data.workSetting = PPTE2SocialSetting.Follow;
             }
 
             list.Gap(16f);

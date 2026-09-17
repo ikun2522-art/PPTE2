@@ -59,6 +59,7 @@ namespace PrisonersPayToEat2
         public PPTE2SocialSetting robberySetting = PPTE2SocialSetting.Follow;  // 抢劫
         public PPTE2SocialSetting beggingSetting = PPTE2SocialSetting.Follow;  // 乞讨
         public PPTE2SocialSetting childPaySetting = PPTE2SocialSetting.Follow; // 父母代付（仅儿童）
+        public PPTE2SocialSetting workSetting = PPTE2SocialSetting.Follow;     // 强制工作（内置劳工系统）
 
         public void ExposeData()
         {
@@ -78,6 +79,7 @@ namespace PrisonersPayToEat2
             Scribe_Values.Look(ref robberySetting, "robberySetting", PPTE2SocialSetting.Follow);
             Scribe_Values.Look(ref beggingSetting, "beggingSetting", PPTE2SocialSetting.Follow);
             Scribe_Values.Look(ref childPaySetting, "childPaySetting", PPTE2SocialSetting.Follow);
+            Scribe_Values.Look(ref workSetting, "workSetting", PPTE2SocialSetting.Follow);
         }
     }
 
@@ -696,6 +698,9 @@ namespace PrisonersPayToEat2
                 {
                     var pawn = prisoners[i];
                     if (pawn == null || pawn.Dead) continue;
+                    // 内置劳工系统：兜底补齐囚犯缺失的 tracker / 工作设置
+                    // （捕获时的 SetGuestStatus 补丁是主路径，这里覆盖老存档与例外路径）
+                    PrisonerWorkSystem.EnsurePrisonerSetup(pawn);
                     var set = pawn.health?.hediffSet;
                     if (set == null) continue;
                     if (set.GetFirstHediffOfDef(ticketHediffDef) == null)

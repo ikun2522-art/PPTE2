@@ -72,6 +72,17 @@
     <Compile Include="Patches\Harmony_UI.cs" />
     <Compile Include="Patches\Harmony_PrisonLabor.cs" />
     <Compile Include="Patches\Harmony_PieceRate.cs" />
+    <Compile Include="Patches\Harmony_PrisonWorkCore.cs" />
+    <Compile Include="Patches\Harmony_PrisonerSchedule.cs" />
+    <Compile Include="Patches\Harmony_PrisonerOutfit.cs" />
+    <Compile Include="Patches\Harmony_LaborArea.cs" />
+    <Compile Include="Patches\Harmony_BillWorkerMode.cs" />
+    <Compile Include="Work\PrisonerWorkSystem.cs" />
+    <Compile Include="Work\Area_PrisonerLabor.cs" />
+    <Compile Include="Work\Need_Motivation.cs" />
+    <Compile Include="Work\ThinkNode_PrisonerWorkGate.cs" />
+    <Compile Include="UI\MainTabWindow_Prisoners.cs" />
+    <Compile Include="UI\PawnColumnWorkers_Prison.cs" />
     <Compile Include="UI\Window_PrisonerConfig.cs" />
     <Compile Include="UI\Window_PrisonerMenu.cs" />
     <Compile Include="UI\Dialog_GiveTickets.cs" />

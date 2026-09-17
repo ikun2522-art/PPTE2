@@ -66,7 +66,8 @@ namespace PrisonersPayToEat2
 
         public static void Tick()
         {
-            if (!PrisonLaborBridge.Present) return;
+            // 工资来源可以是 Prison Labor，也可以是内置劳工系统（v2.3+）
+            if (!PrisonerWorkSystem.WorkIncomeEnabled) return;
             var game = Current.Game;
             if (game == null) return;
             var settings = PrisonersPayToEat2Mod.Settings;
@@ -110,6 +111,7 @@ namespace PrisonersPayToEat2
                             if (accum >= 0.01f) // fractional tickets: credit as soon as we have any
                             {
                                 mgr.AddTickets(pawn, accum);
+                                Need_Motivation.NotifyWage(pawn, accum);
                                 if (settings.logVerbose)
                                     Log.Message($"[PPTE2] {pawn.LabelShortCap} earned {accum:0.##} tickets for working {workTypeDefName ?? "??"}. Balance={mgr.Balance(pawn):0.##}");
                                 accum = 0f;
@@ -125,6 +127,7 @@ namespace PrisonersPayToEat2
                         if (accum >= 0.01f)
                         {
                             mgr.AddTickets(pawn, accum);
+                            Need_Motivation.NotifyWage(pawn, accum);
                             if (settings.logVerbose)
                                 Log.Message($"[PPTE2] {pawn.LabelShortCap} settled {accum:0.##} leftover work. Balance={mgr.Balance(pawn):0.##}");
                         }

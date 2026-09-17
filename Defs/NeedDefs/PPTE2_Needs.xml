@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 囚犯动机（内置劳工系统）：无看管/饥饿下降，被看管/吃饱/领工资上升，过低怠工 -->
+  <NeedDef>
+    <defName>PPTE2_Motivation</defName>
+    <label>motivation</label>
+    <description>How motivated this prisoner is to work. Motivation rises when supervised, well-fed and paid; it falls when neglected. Prisoners with low motivation refuse to work.</description>
+    <needClass>PrisonersPayToEat2.Need_Motivation</needClass>
+    <listPriority>90</listPriority>
+    <baseLevel>0.5</baseLevel>
+    <showOnNeedList>true</showOnNeedList>
+    <minIntelligence>Humanlike</minIntelligence>
+  </NeedDef>
+</Defs>

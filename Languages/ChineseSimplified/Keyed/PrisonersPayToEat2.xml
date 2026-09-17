@@ -157,4 +157,35 @@
   <PPTE2_RansomRejected>你拒绝了 {0} 的赎身请求。</PPTE2_RansomRejected>
   <PPTE2_RansomNoLongerEligible>{0} 已不满足赎身条件，请求失效。</PPTE2_RansomNoLongerEligible>
 
+  <!-- 内置囚犯劳工系统（v2.3+） -->
+  <PPTE2_TabPrisonWork>囚犯工作</PPTE2_TabPrisonWork>
+  <PPTE2_EnableBuiltinLabor>启用内置囚犯劳工系统（未安装 Prison Labor 时生效）</PPTE2_EnableBuiltinLabor>
+  <PPTE2_BuiltinLaborDisabledByPL>已检测到 Prison Labor：内置劳工系统已停用，囚犯工作分配由 Prison Labor 管理。饭票工资结算不受影响。</PPTE2_BuiltinLaborDisabledByPL>
+  <PPTE2_PrisonerWorkDefaultOn>新囚犯默认强制工作</PPTE2_PrisonerWorkDefaultOn>
+  <PPTE2_EnableMotivation>启用动机系统（无人看管/饥饿时动机下降，过低会怠工）</PPTE2_EnableMotivation>
+  <PPTE2_MotivationThreshold>怠工阈值（动机低于此值拒绝工作）：{0}</PPTE2_MotivationThreshold>
+  <PPTE2_AllowedWorkTypesTitle>允许囚犯从事的工种：</PPTE2_AllowedWorkTypesTitle>
+  <PPTE2_PrisonWorkHint>提示：看守、医生、驯兽、灭火、狩猎等敏感/暴力工种永远不会向囚犯开放。其他 MOD 新增的工种可在此勾选启用，但不会显示为「囚犯」标签页工作表的列（优先级默认为正常）。改动会立即同步到所有在押囚犯。</PPTE2_PrisonWorkHint>
+  <PPTE2_SubTabOverview>总览</PPTE2_SubTabOverview>
+  <PPTE2_SubTabWork>工作</PPTE2_SubTabWork>
+  <PPTE2_SubTabSchedule>日程</PPTE2_SubTabSchedule>
+  <PPTE2_SubTabAssign>分配</PPTE2_SubTabAssign>
+  <PPTE2_PrisonTabDisabledPL>已安装 Prison Labor，内置劳工系统已停用。\n囚犯工作由 Prison Labor 管理。</PPTE2_PrisonTabDisabledPL>
+  <PPTE2_PrisonTabDisabledSetting>内置劳工系统已在 MOD 设置中关闭。</PPTE2_PrisonTabDisabledSetting>
+  <PPTE2_ColWorkToggleTip>强制该囚犯工作以赚取饭票（覆盖全局默认设置）。</PPTE2_ColWorkToggleTip>
+  <PPTE2_ColMotivationTip>动机：{0}。动机低于 {1} 时该囚犯拒绝工作。</PPTE2_ColMotivationTip>
+  <PPTE2_ColBalanceTip>{0}余额。点击打开该囚犯的饭票菜单。</PPTE2_ColBalanceTip>
+  <PPTE2_StatusIdle>空闲</PPTE2_StatusIdle>
+  <PPTE2_BillPrisonersOnly>仅囚犯</PPTE2_BillPrisonersOnly>
+  <PPTE2_BillColonistsOnly>仅殖民者与奴隶</PPTE2_BillColonistsOnly>
+  <PPTE2_LaborArea>囚犯劳作区</PPTE2_LaborArea>
+  <PPTE2_LaborAreaExpand>划定囚犯劳作区</PPTE2_LaborAreaExpand>
+  <PPTE2_LaborAreaExpandDesc>划定一片囚犯劳作区。殖民者不会在劳作区内工作，把活留给囚犯干。</PPTE2_LaborAreaExpandDesc>
+  <PPTE2_LaborAreaClear>清除囚犯劳作区</PPTE2_LaborAreaClear>
+  <PPTE2_LaborAreaClearDesc>清除囚犯劳作区。</PPTE2_LaborAreaClearDesc>
+  <PPTE2_MotivationTip>无人看管或挨饿时动机下降；被看管、吃饱、领到工资时上升。动机低于 {0} 时囚犯拒绝工作。</PPTE2_MotivationTip>
+  <PPTE2_MotivationStatPart>囚犯动机 {0}</PPTE2_MotivationStatPart>
+  <PPTE2_WorkSettingsTitle>工作</PPTE2_WorkSettingsTitle>
+  <PPTE2_FeatureWork>强制工作</PPTE2_FeatureWork>
+
 </LanguageData>

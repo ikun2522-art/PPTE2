@@ -23,19 +23,25 @@ Prisoners can no longer freeload off your colony's food supply! Every meal a pri
 - Per-food pricing: override the ticket cost of any individual food item.
 - **Meal credit** (on by default): broke prisoners may still eat and the balance goes negative (debt); wages and other income repay the debt first. Debt shows in red in the health tab. With credit off, a prisoner who can't afford a meal simply cannot eat it (the food is kept, not wasted).
 
-### ⛏️ Prison Labor 打工赚饭票 / Earn Tickets Through Prison Labor
-- 集成 Avius 的 **Prison Labor** MOD：哪些工种囚犯能做、工作区域、动机系统完全由 Prison Labor 管理
-- 按**工作种类**分别设置每小时饭票（如挖矿 2/小时、清洁 1/小时、种植 0.5/小时）
-- **按时 / 按量双计费**：每个工种可单独切换按量计费，按产出发饭票——生产台按批次、采矿按矿脉、建造按建筑、种植/砍伐/播种按株、搬运按次、清洁按块、研究按科技（多人按贡献比例分）
+### ⛏️ 囚犯工作赚饭票 / Prisoners Work for Tickets
+- **内置囚犯劳工系统（v2.3+）**：无需安装 Prison Labor，囚犯也能打工！默认只开放粗活（采矿/建造/种植/割除/搬运/清洁），其余工种可在设置中勾选；看守/医生/驯兽/灭火/狩猎等敏感工种永不开放
+- 新增**「囚犯」主标签页**统一管理：**总览**（每囚犯工作开关、动机条、饭票余额、当前状态）· **工作**（1-4 优先级表）· **日程**（时间表 + 活动区限制）· **分配**（医疗/着装方案/饮食/药品）
+- **动机系统**：无人看管或挨饿的囚犯动机下降，过低会怠工并降低工作速度；被看管、吃饱饭、领到工资会提升干劲（可在设置中关闭/调阈值）
+- **囚犯劳作区**：建筑规划 → 区域中划定后，殖民者不会在区内工作，把活留给囚犯
+- **账单限制**：生产台账单可设「仅囚犯 / 仅殖民者与奴隶」
+- 安装了 **Prison Labor** 时内置系统自动停用，由它接管工作分配（工资结算不受影响）
+- 按**工作种类**分别设置每小时饭票；**按时 / 按量双计费**，按产出发饭票——生产台按批次、采矿按矿脉、建造按建筑、种植/砍伐/播种按株、搬运按次、清洁按块、研究按科技（多人按贡献比例分）
 - **未知工种通用兜底**：其他 MOD 新增的工种自动支持按量（按完成一次工作计费），无需额外配置
-- 每个囚犯可单独覆盖计费方式（跟随全局 / 按时 / 按量）
-- 全局工资倍率 + 每个囚犯的**个人工资倍率**可叠加调整
-- Integrates Avius's **Prison Labor** MOD: which work types a prisoner may do is fully decided by Prison Labor.
-- Per-work-type hourly wages (e.g. mining 2/hr, cleaning 1/hr, growing 0.5/hr).
-- **Hourly or piece-rate billing per work type**: piece rate pays per completed output — production per recipe batch, mining per vein, construction per building, growing/cutting per plant, hauling per haul, cleaning per filth, research per tech (split among contributors by work share).
+- 每个囚犯可单独覆盖计费方式（跟随全局 / 按时 / 按量）；全局工资倍率 + 个人工资倍率可叠加
+- **Built-in prisoner labour system (v2.3+)**: prisoners work without Prison Labor! Dumb labour (mining/construction/growing/cutting/hauling/cleaning) is on by default; more work types can be enabled in settings; warden/doctor/handling/firefighting/hunting are never available.
+- New **"Prisoners" main tab**: **Overview** (per-prisoner work toggle, motivation bar, ticket balance, status) · **Work** (1-4 priorities) · **Schedule** (timetable + allowed area) · **Assign** (medical/outfit/food/drugs).
+- **Motivation system**: unsupervised or starving prisoners lose motivation and refuse to work below a threshold; supervision, full bellies and wages raise it (toggleable).
+- **Prisoner labor area**: designate an area where colonists won't work, leaving the jobs to prisoners.
+- **Bill restriction**: production bills can be set to "prisoners only / colonists & slaves only".
+- With **Prison Labor** installed, the built-in system steps aside and lets it assign work (wages keep flowing).
+- Per-work-type hourly wages; **hourly or piece-rate billing** — piece rate pays per completed output: production per recipe batch, mining per vein, construction per building, growing/cutting per plant, hauling per haul, cleaning per filth, research per tech (split among contributors by work share).
 - **Generic fallback for unknown work types**: work types added by other MODs support piece rate automatically (paid per completed job).
-- Per-prisoner billing override (follow global / hourly / piece-rate).
-- Global wage multiplier + per-prisoner wage multiplier stack.
+- Per-prisoner billing override (follow global / hourly / piece-rate); global wage multiplier + per-prisoner wage multiplier stack.
 
 ### 🏥 贩卖器官换饭票 / Sell Organs for Tickets
 - 新增两种医疗手术：**摘取肾脏** / **摘取肺**，成功后囚犯获得饭票
@@ -60,11 +66,11 @@ Prisoners can no longer freeload off your colony's food supply! Every meal a pri
 ### 🎛️ 玩家管理 / Player Controls
 - 选中囚犯：一个**「囚犯饭票」按钮**整合全部操作——饭票余额、发放/扣除饭票、配置囚犯、赎身批准
 - 囚犯的**健康标签页**会以「健康状态」形式直接显示饭票余额，颜色随余额变化（绿/黄/橙/红），悬停可见具体数量；欠款显示为红字
-- 每个囚犯单独配置：个人食物倍率、个人工资倍率、计费方式（按时/按量）、是否允许贩卖器官、赎身所需饭票与最短囚禁天数、**借款/抢劫/乞讨各自允许/禁止**
+- 每个囚犯单独配置：个人食物倍率、个人工资倍率、计费方式（按时/按量）、是否允许贩卖器官、赎身所需饭票与最短囚禁天数、**借款/抢劫/乞讨/强制工作各自允许/禁止**
 - 手动发放/扣除支持小数
 - One **"Prisoner tickets" button** on a selected prisoner gathers every control — balance, give/take tickets, configure, ransom approval.
 - The prisoner's **health tab** shows the ticket balance as a "health status" row, colored by how much is left (green/yellow/orange/red); debt shows in red; hover for details.
-- Per-prisoner settings: food multiplier, wage multiplier, billing mode (hourly/piece-rate), organ-sale permission, ransom ticket count & minimum imprisonment time, and **per-feature allow/deny for loans, robbery and begging**.
+- Per-prisoner settings: food multiplier, wage multiplier, billing mode (hourly/piece-rate), organ-sale permission, ransom ticket count & minimum imprisonment time, and **per-feature allow/deny for loans, robbery, begging and forced work**.
 - Manual give/take supports decimals.
 
 ### 🗣️ 囚犯社会行为 / Prisoner Social Behaviors
@@ -95,11 +101,11 @@ Prisoners can no longer freeload off your colony's food supply! Every meal a pri
 
 ### ⚙️ 其他 / Extras
 - **自定义饭票名称**（如改成"代币""劳动券"）
-- 设置页三个标签页：通用设置 / 按工种饭票 / 食物价格（带搜索）
+- 设置页五个标签页：通用设置 / 按工种饭票 / 食物价格（带搜索）/ 囚犯社会 / 囚犯工作
 - 越狱 / 精神崩溃期间跳过饭票检查（可关闭）
 - 中英双语
 - Custom ticket name (e.g. "token", "labor voucher").
-- Settings tabs: General / Work-type wages / Food prices (searchable).
+- Settings tabs: General / Work-type wages / Food prices (searchable) / Prisoner social / Prisoner work.
 - Ticket check skipped during prison breaks / mental breaks (toggleable).
 - Bilingual UI (简体中文 / English).
 
@@ -110,7 +116,7 @@ Prisoners can no longer freeload off your colony's food supply! Every meal a pri
 | 依赖 | 必需 | 说明 |
 |------|------|------|
 | [Harmony](https://github.com/pardeike/HarmonyRimWorld/releases/latest) | ✅ 必须 | 补丁框架 |
-| [Prison Labor](https://steamcommunity.com/sharedfiles/filedetails/?id=1899474310) | ✅ 强烈建议 | 囚犯劳动系统（未安装时仅器官贩卖可赚饭票） |
+| [Prison Labor](https://steamcommunity.com/sharedfiles/filedetails/?id=1899474310) | ⭕ 可选 | v2.3 起内置囚犯劳工系统；安装后由 Prison Labor 接管工作分配 |
 
 RimWorld **1.6** required.
 
@@ -161,7 +167,8 @@ git clone https://github.com/ikun2522-art/PPTE2.git RimWorld/Mods/PrisonersPayTo
 ```
 PrisonersPayToEat2/
 ├── About/About.xml            # MOD 元数据
-├── Defs/RecipeDefs/           # 器官摘取手术配方
+├── Defs/                      # 手术配方 / 思维树 / 需求 / 标签页 / 区域等定义
+├── Patches/                   # XML 补丁（劳作区画笔、动机工作速度）
 ├── Languages/                 # 中英双语翻译
 ├── Source/                    # C# 源码
 └── 1.6/Assemblies/            # 编译产物 (dll + pdb)

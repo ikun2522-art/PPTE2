@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- 动机影响全局工作速度：往原版 WorkSpeedGlobal 注入我们的 StatPart -->
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/StatDef[defName="WorkSpeedGlobal"]/parts</xpath>
+    <value>
+      <li Class="PrisonersPayToEat2.StatPart_PrisonerMotivation" />
+    </value>
+  </Operation>
+</Patch>

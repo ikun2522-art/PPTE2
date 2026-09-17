@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <PPTE2_ColWorkToggle.label>Work</PPTE2_ColWorkToggle.label>
+  <PPTE2_ColWorkToggle.headerTip>Whether this prisoner is forced to work for meal tickets.</PPTE2_ColWorkToggle.headerTip>
+  <PPTE2_ColMotivation.label>Motivation</PPTE2_ColMotivation.label>
+  <PPTE2_ColMotivation.headerTip>Prisoner motivation. Unsupervised, hungry prisoners lose motivation; prisoners with low motivation refuse to work.</PPTE2_ColMotivation.headerTip>
+  <PPTE2_ColBalance.label>Balance</PPTE2_ColBalance.label>
+  <PPTE2_ColBalance.headerTip>Meal ticket balance. Click to open the prisoner menu.</PPTE2_ColBalance.headerTip>
+  <PPTE2_ColWorkStatus.label>Status</PPTE2_ColWorkStatus.label>
+  <PPTE2_ColWorkStatus.headerTip>What this prisoner is currently doing.</PPTE2_ColWorkStatus.headerTip>
+  <PPTE2_ColPrisonerArea.label>Allowed area</PPTE2_ColPrisonerArea.label>
+  <PPTE2_ColPrisonerArea.headerTip>Restrict where this prisoner may go and work.</PPTE2_ColPrisonerArea.headerTip>
+</LanguageData>

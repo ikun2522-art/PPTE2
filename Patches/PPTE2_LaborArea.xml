@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- 往 Architect→Zone 类别注入囚犯劳作区的两个画笔（与 Prison Labor 的劳作区工具同位置） -->
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/DesignationCategoryDef[defName="Zone"]/specialDesignatorClasses</xpath>
+    <value>
+      <li>PrisonersPayToEat2.Designator_PrisonerLaborAreaExpand</li>
+      <li>PrisonersPayToEat2.Designator_PrisonerLaborAreaClear</li>
+    </value>
+  </Operation>
+</Patch>

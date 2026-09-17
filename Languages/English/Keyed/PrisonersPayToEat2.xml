@@ -157,4 +157,35 @@
   <PPTE2_RansomRejected>You rejected {0}'s ransom request.</PPTE2_RansomRejected>
   <PPTE2_RansomNoLongerEligible>{0} no longer meets the ransom requirements; request voided.</PPTE2_RansomNoLongerEligible>
 
+  <!-- Built-in prisoner labour system (v2.3+) -->
+  <PPTE2_TabPrisonWork>Prisoner work</PPTE2_TabPrisonWork>
+  <PPTE2_EnableBuiltinLabor>Enable built-in prisoner labour (used when Prison Labor is not installed)</PPTE2_EnableBuiltinLabor>
+  <PPTE2_BuiltinLaborDisabledByPL>Prison Labor detected: the built-in labour system is disabled and prisoner work assignment is managed by Prison Labor. Ticket wages are unaffected.</PPTE2_BuiltinLaborDisabledByPL>
+  <PPTE2_PrisonerWorkDefaultOn>Force new prisoners to work by default</PPTE2_PrisonerWorkDefaultOn>
+  <PPTE2_EnableMotivation>Enable motivation (unsupervised/hungry prisoners lose motivation and slack off)</PPTE2_EnableMotivation>
+  <PPTE2_MotivationThreshold>Laziness threshold (prisoners refuse work below this): {0}</PPTE2_MotivationThreshold>
+  <PPTE2_AllowedWorkTypesTitle>Work types prisoners may do:</PPTE2_AllowedWorkTypesTitle>
+  <PPTE2_PrisonWorkHint>Note: warden, doctor, handling, firefighting, hunting and other sensitive/violent work types are never available to prisoners. Work types added by other mods can be enabled here but won't appear as columns in the Prisoners tab (they default to normal priority). Changes apply to all current prisoners immediately.</PPTE2_PrisonWorkHint>
+  <PPTE2_SubTabOverview>Overview</PPTE2_SubTabOverview>
+  <PPTE2_SubTabWork>Work</PPTE2_SubTabWork>
+  <PPTE2_SubTabSchedule>Schedule</PPTE2_SubTabSchedule>
+  <PPTE2_SubTabAssign>Assign</PPTE2_SubTabAssign>
+  <PPTE2_PrisonTabDisabledPL>Prison Labor is installed; the built-in labour system is disabled.\nPrisoner work is managed by Prison Labor.</PPTE2_PrisonTabDisabledPL>
+  <PPTE2_PrisonTabDisabledSetting>The built-in labour system is disabled in the mod settings.</PPTE2_PrisonTabDisabledSetting>
+  <PPTE2_ColWorkToggleTip>Force this prisoner to work for meal tickets (overrides the global default).</PPTE2_ColWorkToggleTip>
+  <PPTE2_ColMotivationTip>Motivation: {0}. Below {1} this prisoner refuses to work.</PPTE2_ColMotivationTip>
+  <PPTE2_ColBalanceTip>{0} balance. Click to open this prisoner's menu.</PPTE2_ColBalanceTip>
+  <PPTE2_StatusIdle>Idle</PPTE2_StatusIdle>
+  <PPTE2_BillPrisonersOnly>Prisoners only</PPTE2_BillPrisonersOnly>
+  <PPTE2_BillColonistsOnly>Colonists &amp; slaves only</PPTE2_BillColonistsOnly>
+  <PPTE2_LaborArea>Prisoner labor area</PPTE2_LaborArea>
+  <PPTE2_LaborAreaExpand>Expand prisoner labor area</PPTE2_LaborAreaExpand>
+  <PPTE2_LaborAreaExpandDesc>Designate a prisoner labor area. Colonists will not work inside it, leaving the work to prisoners.</PPTE2_LaborAreaExpandDesc>
+  <PPTE2_LaborAreaClear>Clear prisoner labor area</PPTE2_LaborAreaClear>
+  <PPTE2_LaborAreaClearDesc>Clear prisoner labor areas.</PPTE2_LaborAreaClearDesc>
+  <PPTE2_MotivationTip>Motivation falls when unsupervised or starving, and rises when supervised, well-fed or paid. Below {0} the prisoner refuses to work.</PPTE2_MotivationTip>
+  <PPTE2_MotivationStatPart>Prisoner motivation {0}</PPTE2_MotivationStatPart>
+  <PPTE2_WorkSettingsTitle>Work</PPTE2_WorkSettingsTitle>
+  <PPTE2_FeatureWork>Forced work</PPTE2_FeatureWork>
+
 </LanguageData>

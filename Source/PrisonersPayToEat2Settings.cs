@@ -69,6 +69,13 @@ namespace PrisonersPayToEat2
         public float beggingChanceBase = 0.35f;       // 好感度 0 时的乞讨成功率
         public float beggingChancePerOpinion = 0.004f; // 每点好感度增加的成功率
 
+        // ============ 内置囚犯劳工系统（v2.3+，安装了 Prison Labor 时自动停用） ============
+        public bool enableBuiltinPrisonLabor = true;  // 内置劳工系统总开关
+        public bool prisonerWorkDefaultOn = true;     // 新囚犯默认强制工作（每囚犯可用三态覆盖）
+        public bool enableMotivation = true;          // 动机系统：无人看管/饥饿时动机下降，过低怠工
+        public float motivationWorkThreshold = 0.2f;  // 动机低于此值拒绝工作（怠工）
+        public List<string> prisonerAllowedWorkTypes = PrisonerWorkSystem.DefaultWorkTypes();
+
         public override void ExposeData()
         {
             base.ExposeData();
@@ -116,6 +123,12 @@ namespace PrisonersPayToEat2
             Scribe_Values.Look(ref beggingAmountMax, "beggingAmountMax", 3f);
             Scribe_Values.Look(ref beggingChanceBase, "beggingChanceBase", 0.35f);
             Scribe_Values.Look(ref beggingChancePerOpinion, "beggingChancePerOpinion", 0.004f);
+            Scribe_Values.Look(ref enableBuiltinPrisonLabor, "enableBuiltinPrisonLabor", true);
+            Scribe_Values.Look(ref prisonerWorkDefaultOn, "prisonerWorkDefaultOn", true);
+            Scribe_Values.Look(ref enableMotivation, "enableMotivation", true);
+            Scribe_Values.Look(ref motivationWorkThreshold, "motivationWorkThreshold", 0.2f);
+            Scribe_Collections.Look(ref prisonerAllowedWorkTypes, "prisonerAllowedWorkTypes", LookMode.Value);
+            if (prisonerAllowedWorkTypes == null) prisonerAllowedWorkTypes = PrisonerWorkSystem.DefaultWorkTypes();
         }
 
         /// <summary>Hourly wage for a given WorkTypeDef.defName; falls back to defaultWagePerHour.</summary>
@@ -127,7 +140,7 @@ namespace PrisonersPayToEat2
 
         // ================= Settings window: self-drawn tab bar + per-tab scrolling =================
 
-        private int _curTab; // 0=General, 1=WorkTypeWages, 2=FoodPrices, 3=Social
+        private int _curTab; // 0=General, 1=WorkTypeWages, 2=FoodPrices, 3=Social, 4=PrisonWork
 
         public void DoWindowContents(Rect inRect)
         {
@@ -137,7 +150,8 @@ namespace PrisonersPayToEat2
                 "PPTE2_TabGeneral".Translate(),
                 "PPTE2_TabWorkWages".Translate(),
                 "PPTE2_TabFoodPrices".Translate(),
-                "PPTE2_TabSocial".Translate()
+                "PPTE2_TabSocial".Translate(),
+                "PPTE2_TabPrisonWork".Translate()
             };
 
             float tabW = inRect.width / tabLabels.Length;
@@ -166,8 +180,73 @@ namespace PrisonersPayToEat2
                 case 0: DrawGeneralTab(content); break;
                 case 1: DrawWorkTypeWagesTab(content); break;
                 case 2: DrawFoodPricesTab(content); break;
-                default: DrawSocialTab(content); break;
+                case 3: DrawSocialTab(content); break;
+                default: DrawPrisonWorkTab(content); break;
             }
+        }
+
+        // ================= Tab 5: 囚犯工作（内置劳工系统） =================
+
+        private Vector2 _prisonWorkScroll = Vector2.zero;
+
+        private void DrawPrisonWorkTab(Rect rect)
+        {
+            var view = new Rect(0f, 0f, rect.width - 20f, 720f);
+            Widgets.BeginScrollView(rect, ref _prisonWorkScroll, view);
+            float colW = (view.width - 40f) / 2f;
+            float ly = 4f;
+
+            if (PrisonLaborBridge.Present)
+            {
+                // Prison Labor 在场：内置系统整体停用，这里只做说明
+                GUI.color = new Color(0.7f, 0.7f, 0.65f);
+                float h = Text.CalcHeight("PPTE2_BuiltinLaborDisabledByPL".Translate(), view.width);
+                Widgets.Label(new Rect(0f, ly, view.width, h), "PPTE2_BuiltinLaborDisabledByPL".Translate());
+                GUI.color = Color.white;
+                ly += h + 12f;
+            }
+            else
+            {
+                bool prev = enableBuiltinPrisonLabor;
+                DrawCheckboxRow(0f, ref ly, "PPTE2_EnableBuiltinLabor".Translate(), ref enableBuiltinPrisonLabor);
+                if (enableBuiltinPrisonLabor && !prev) PrisonerWorkSystem.OnAllowedTypesChanged();
+                DrawCheckboxRow(0f, ref ly, "PPTE2_PrisonerWorkDefaultOn".Translate(), ref prisonerWorkDefaultOn);
+                DrawCheckboxRow(0f, ref ly, "PPTE2_EnableMotivation".Translate(), ref enableMotivation);
+                if (enableMotivation)
+                    DrawSliderRow(0f, ref ly, colW,
+                        "PPTE2_MotivationThreshold".Translate(motivationWorkThreshold.ToStringPercent()),
+                        ref motivationWorkThreshold, 0f, 0.5f);
+                ly += 16f;
+
+                // 允许工种列表
+                Widgets.Label(new Rect(0f, ly + 2f, colW, 24f), "PPTE2_AllowedWorkTypesTitle".Translate());
+                if (Widgets.ButtonText(new Rect(view.width - 160f, ly, 160f, 26f), "PPTE2_ResetDefaults".Translate()))
+                {
+                    prisonerAllowedWorkTypes = PrisonerWorkSystem.DefaultWorkTypes();
+                    PrisonerWorkSystem.OnAllowedTypesChanged();
+                }
+                ly += 32f;
+                EnsureWorkTypesCached();
+                bool changed = false;
+                foreach (var wt in _cachedWorkTypes)
+                {
+                    if (!wt.visible || PrisonerWorkSystem.NeverAllowedWorkTypes.Contains(wt.defName)) continue;
+                    bool on = prisonerAllowedWorkTypes.Contains(wt.defName);
+                    bool newOn = on;
+                    DrawCheckboxRow(0f, ref ly, wt.labelShort ?? wt.defName, ref newOn);
+                    if (newOn == on) continue;
+                    changed = true;
+                    if (newOn) prisonerAllowedWorkTypes.Add(wt.defName);
+                    else prisonerAllowedWorkTypes.Remove(wt.defName);
+                }
+                if (changed) PrisonerWorkSystem.OnAllowedTypesChanged();
+
+                GUI.color = new Color(0.7f, 0.7f, 0.65f);
+                float hintH = Text.CalcHeight("PPTE2_PrisonWorkHint".Translate(), view.width);
+                Widgets.Label(new Rect(0f, ly + 12f, view.width, hintH), "PPTE2_PrisonWorkHint".Translate());
+                GUI.color = Color.white;
+            }
+            Widgets.EndScrollView();
         }
 
         // ================= Tab 4: 囚犯社会行为（借款/抢劫/乞讨） =================

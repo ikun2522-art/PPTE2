@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 囚犯管理主标签按钮（内置劳工系统的管理入口；安装 Prison Labor 时窗口内显示停用提示） -->
+  <MainButtonDef>
+    <defName>PPTE2_Prisoners</defName>
+    <label>Prisoners</label>
+    <description>Manage colony prisoners: work, schedule, assignment and meal tickets.</description>
+    <tabWindowClass>PrisonersPayToEat2.MainTabWindow_Prisoners</tabWindowClass>
+    <order>35</order>
+    <closesWorldView>true</closesWorldView>
+  </MainButtonDef>
+</Defs>

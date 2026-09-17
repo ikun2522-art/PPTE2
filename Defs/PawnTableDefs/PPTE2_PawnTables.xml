@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- ============ 囚犯标签页的 4 张表 ============ -->
+
+  <PawnTableDef>
+    <defName>PPTE2_PrisonersOverview</defName>
+    <workerClass>PawnTable</workerClass>
+    <columns>
+      <li>LabelWithIcon</li>
+      <li>GapTiny</li>
+      <li>PPTE2_ColWorkToggle</li>
+      <li>GapTiny</li>
+      <li>PPTE2_ColMotivation</li>
+      <li>GapTiny</li>
+      <li>PPTE2_ColBalance</li>
+      <li>GapTiny</li>
+      <li>PPTE2_ColWorkStatus</li>
+      <li>RemainingSpace</li>
+    </columns>
+  </PawnTableDef>
+
+  <PawnTableDef>
+    <defName>PPTE2_PrisonersWork</defName>
+    <workerClass>PawnTable</workerClass>
+    <columns>
+      <li>LabelWithIcon</li>
+      <!-- 列顺序同原版工作表：按 naturalPriority 降序 -->
+      <li>PPTE2_WorkPriority_Cooking</li>
+      <li>PPTE2_WorkPriority_Construction</li>
+      <li>PPTE2_WorkPriority_Growing</li>
+      <li>PPTE2_WorkPriority_Mining</li>
+      <li>PPTE2_WorkPriority_PlantCutting</li>
+      <li>PPTE2_WorkPriority_Smithing</li>
+      <li>PPTE2_WorkPriority_Tailoring</li>
+      <li>PPTE2_WorkPriority_Art</li>
+      <li>PPTE2_WorkPriority_Crafting</li>
+      <li>PPTE2_WorkPriority_Hauling</li>
+      <li>PPTE2_WorkPriority_Cleaning</li>
+      <li>PPTE2_WorkPriority_Research</li>
+      <li>RemainingSpace</li>
+    </columns>
+  </PawnTableDef>
+
+  <PawnTableDef>
+    <defName>PPTE2_PrisonersSchedule</defName>
+    <workerClass>PawnTable</workerClass>
+    <columns>
+      <li>LabelWithIcon</li>
+      <li>CopyPasteTimetable</li>
+      <li>Timetable</li>
+      <li>PPTE2_ColPrisonerArea</li>
+      <li>RemainingSpace</li>
+    </columns>
+  </PawnTableDef>
+
+  <PawnTableDef>
+    <defName>PPTE2_PrisonersAssign</defName>
+    <workerClass>PawnTable</workerClass>
+    <columns>
+      <li>LabelWithIcon</li>
+      <li>MedicalCare</li>
+      <li>GapTiny</li>
+      <li>Outfit</li>
+      <li>GapTiny</li>
+      <li>FoodRestriction</li>
+      <li>GapTiny</li>
+      <li>DrugPolicy</li>
+      <li>RemainingSpace</li>
+    </columns>
+  </PawnTableDef>
+
+  <!-- ============ 总览自定义列 ============ -->
+
+  <PawnColumnDef>
+    <defName>PPTE2_ColWorkToggle</defName>
+    <label>Work</label>
+    <headerTip>Whether this prisoner is forced to work for meal tickets.</headerTip>
+    <workerClass>PrisonersPayToEat2.PawnColumnWorker_WorkToggle</workerClass>
+    <sortable>true</sortable>
+    <width>60</width>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>PPTE2_ColMotivation</defName>
+    <label>Motivation</label>
+    <headerTip>Prisoner motivation. Unsupervised, hungry prisoners lose motivation; prisoners with low motivation refuse to work.</headerTip>
+    <workerClass>PrisonersPayToEat2.PawnColumnWorker_Motivation</workerClass>
+    <sortable>true</sortable>
+    <width>90</width>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>PPTE2_ColBalance</defName>
+    <label>Balance</label>
+    <headerTip>Meal ticket balance. Click to open the prisoner menu.</headerTip>
+    <workerClass>PrisonersPayToEat2.PawnColumnWorker_TicketBalance</workerClass>
+    <sortable>true</sortable>
+    <width>90</width>
+  </PawnColumnDef>
+
+  <PawnColumnDef>
+    <defName>PPTE2_ColWorkStatus</defName>
+    <label>Status</label>
+    <headerTip>What this prisoner is currently doing.</headerTip>
+    <workerClass>PrisonersPayToEat2.PawnColumnWorker_WorkStatus</workerClass>
+    <sortable>true</sortable>
+    <width>110</width>
+  </PawnColumnDef>
+
+  <!-- 活动区列：原版 PawnColumnWorker_AllowedArea 有 Faction==OfPlayer 检查，囚犯不画控件，故自研 -->
+  <PawnColumnDef>
+    <defName>PPTE2_ColPrisonerArea</defName>
+    <label>Allowed area</label>
+    <headerTip>Restrict where this prisoner may go and work.</headerTip>
+    <workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerAllowedArea</workerClass>
+    <sortable>true</sortable>
+  </PawnColumnDef>
+
+  <!-- ============ 囚犯工作优先级列（worker 过滤全局未允许的工种） ============ -->
+
+  <PawnColumnDef><defName>PPTE2_WorkPriority_Cooking</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>Cooking</workType><sortable>true</sortable></PawnColumnDef>
+  <PawnColumnDef><defName>PPTE2_WorkPriority_Construction</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>Construction</workType><sortable>true</sortable></PawnColumnDef>
+  <PawnColumnDef><defName>PPTE2_WorkPriority_Growing</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>Growing</workType><sortable>true</sortable></PawnColumnDef>
+  <PawnColumnDef><defName>PPTE2_WorkPriority_Mining</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>Mining</workType><sortable>true</sortable></PawnColumnDef>
+  <PawnColumnDef><defName>PPTE2_WorkPriority_PlantCutting</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>PlantCutting</workType><sortable>true</sortable></PawnColumnDef>
+  <PawnColumnDef><defName>PPTE2_WorkPriority_Smithing</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>Smithing</workType><sortable>true</sortable></PawnColumnDef>
+  <PawnColumnDef><defName>PPTE2_WorkPriority_Tailoring</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>Tailoring</workType><sortable>true</sortable></PawnColumnDef>
+  <PawnColumnDef><defName>PPTE2_WorkPriority_Art</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>Art</workType><sortable>true</sortable></PawnColumnDef>
+  <PawnColumnDef><defName>PPTE2_WorkPriority_Crafting</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>Crafting</workType><sortable>true</sortable></PawnColumnDef>
+  <PawnColumnDef><defName>PPTE2_WorkPriority_Hauling</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>Hauling</workType><sortable>true</sortable></PawnColumnDef>
+  <PawnColumnDef><defName>PPTE2_WorkPriority_Cleaning</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>Cleaning</workType><sortable>true</sortable></PawnColumnDef>
+  <PawnColumnDef><defName>PPTE2_WorkPriority_Research</defName><workerClass>PrisonersPayToEat2.PawnColumnWorker_PrisonerWorkPriority</workerClass><workType>Research</workType><sortable>true</sortable></PawnColumnDef>
+
+</Defs>

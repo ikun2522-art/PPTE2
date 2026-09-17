@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!--
+    Built-in prisoner labour: injected into every humanlike's think tree after the duty slot
+    (same vanilla insertTag mechanism Prison Labor and Biotech use). The gate node rejects
+    non-prisoners and prisoners who shouldn't work, so this is a no-op for everyone else.
+    Inside, prisoners reuse the vanilla colonist pattern: needs (food/rest/joy) outrank work
+    via the priority sorter, JobGiver_Work does the actual work scanning (our Harmony postfix
+    on PawnCanUseWorkGiver whitelists work-enabled prisoners for the allowed work types).
+    JobGiver_SeekAllowedArea comes first so an allowed-area assignment is enforced.
+  -->
+  <ThinkTreeDef>
+    <defName>PPTE2_PrisonerWork</defName>
+    <insertTag>Humanlike_PostDuty</insertTag>
+    <insertPriority>80</insertPriority>
+    <thinkRoot Class="PrisonersPayToEat2.ThinkNode_PrisonerWorkGate">
+      <subNodes>
+        <li Class="JobGiver_SeekAllowedArea"/>
+        <li Class="ThinkNode_Tagger">
+          <tagToGive>SatisfyingNeeds</tagToGive>
+          <subNodes>
+            <li Class="ThinkNode_PrioritySorter">
+              <subNodes>
+                <li Class="JobGiver_GetFood"/>
+                <li Class="JobGiver_GetRest"/>
+                <li Class="JobGiver_GetJoy"/>
+                <li Class="JobGiver_Work"/>
+              </subNodes>
+            </li>
+          </subNodes>
+        </li>
+      </subNodes>
+    </thinkRoot>
+  </ThinkTreeDef>
+</Defs>
