@@ -66,6 +66,9 @@ namespace PrisonersPayToEat2
                 {
                     var pawn = prisoners[i];
                     if (pawn == null || pawn.Dead || pawn.Downed || pawn.InMentalState) continue;
+                    // 未生成在地图上的囚犯（被装进容器/休眠舱/跨图转移中）pawn.Map 为 null，
+                    // 后面的 PickTarget 会在 map.mapPawns 上抛空引用
+                    if (!pawn.Spawned || pawn.MapHeld == null) continue;
 
                     TryBeg(pawn, mgr, now);
                     TryLoan(pawn, mgr, now);
@@ -89,6 +92,7 @@ namespace PrisonersPayToEat2
         /// <summary>选一个同地图的囚犯目标：按分数选最高的（分数越高越可能被选中）。</summary>
         private static Pawn PickTarget(Pawn self, Map map, System.Func<Pawn, float> score)
         {
+            if (self == null || map == null) return null; // 未生成的囚犯没有地图
             Pawn best = null;
             float bestScore = float.NegativeInfinity;
             var prisoners = map.mapPawns.PrisonersOfColony;

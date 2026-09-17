@@ -23,7 +23,14 @@
               <subNodes>
                 <li Class="JobGiver_GetFood"/>
                 <li Class="JobGiver_GetRest"/>
-                <li Class="JobGiver_GetJoy"/>
+                <!-- 必须用原版包装节点：裸的 JobGiver_GetJoy 没有 GetPriority 实现，
+                     PrioritySorter 会打红字并跳过（原版殖民者树同款写法） -->
+                <li Class="ThinkNode_Priority_GetJoy">
+                  <subNodes>
+                    <li Class="JobGiver_GetJoy"/>
+                    <li Class="JobGiver_GetJoyInBed"/>
+                  </subNodes>
+                </li>
                 <li Class="JobGiver_Work"/>
               </subNodes>
             </li>
